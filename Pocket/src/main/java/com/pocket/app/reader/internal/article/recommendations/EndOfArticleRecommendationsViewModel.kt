@@ -3,9 +3,6 @@ package com.pocket.app.reader.internal.article.recommendations
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pocket.analytics.ContentOpenTracker
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.ArticleViewEvents
 import com.pocket.app.reader.internal.article.ArticleScreen
 import com.pocket.app.reader.queue.UrlListQueueManager
 import com.pocket.repository.ItemRepository
@@ -24,9 +21,7 @@ import javax.inject.Inject
 class EndOfArticleRecommendationsViewModel @Inject constructor(
     private val recommendationsRepository: RecommendationsRepository,
     private val itemRepository: ItemRepository,
-    private val save: Save,
-    private val tracker: Tracker,
-    private val contentOpenTracker: ContentOpenTracker,
+    private val save: Save
 ) : ViewModel(),
     ArticleScreen.Initializer,
     ArticleScreen.EndOfArticleRecommendationInteractions {
@@ -60,13 +55,13 @@ class EndOfArticleRecommendationsViewModel @Inject constructor(
                             imageUrl = corpusRecommendation.corpusItem.imageUrl,
                             url = corpusRecommendation.corpusItem.url,
                             isSaved = corpusRecommendation.corpusItem.isSaved,
-                            corpusRecommendationId = corpusRecommendation.id,
+                            corpusRecommendationId = corpusRecommendation.id
                         )
                     }
                 }
                 if (corpusRecommendations.isNotEmpty()) {
                     _uiState.edit { copy(
-                        visible = true,
+                        visible = true
                     ) }
                 }
             }
@@ -85,10 +80,6 @@ class EndOfArticleRecommendationsViewModel @Inject constructor(
     }
 
     override fun onCardClicked(url: String, corpusRecommendationId: String) {
-        contentOpenTracker.track(ArticleViewEvents.endOfArticleContentOpen(
-            url,
-            corpusRecommendationId,
-        ))
         _events.tryEmit(ArticleScreen.Event.OpenNewUrl(
             url,
             UrlListQueueManager(
@@ -101,12 +92,11 @@ class EndOfArticleRecommendationsViewModel @Inject constructor(
     override fun onSaveClicked(
         url: String,
         isSaved: Boolean,
-        corpusRecommendationId: String,
+        corpusRecommendationId: String
     ) {
         if (isSaved) {
             itemRepository.delete(url)
         } else {
-            tracker.track(ArticleViewEvents.recommendationSaveClicked(url, corpusRecommendationId))
             viewModelScope.launch {
                 when (save(url)) {
                     Save.Result.Success -> {
@@ -119,7 +109,6 @@ class EndOfArticleRecommendationsViewModel @Inject constructor(
     }
 
     override fun onOverflowClicked(url: String, title: String, corpusRecommendationId: String?) {
-        tracker.track(ArticleViewEvents.recommendationOverflowClicked())
         _events.tryEmit(value = ArticleScreen.Event.OpenOverflowBottomSheet(
             url = url,
             title = title,
@@ -130,13 +119,8 @@ class EndOfArticleRecommendationsViewModel @Inject constructor(
     override fun onArticleViewed(
         position: Int,
         url: String,
-        corpusRecommendationId: String,
+        corpusRecommendationId: String
     ) {
-        tracker.track(ArticleViewEvents.endOfArticleImpression(
-            positionInList = position,
-            itemUrl = url,
-            corpusRecommendationId = corpusRecommendationId,
-        ))
     }
 
     data class CorpusItemUiState(
@@ -146,7 +130,7 @@ class EndOfArticleRecommendationsViewModel @Inject constructor(
         val imageUrl: String,
         val url: String,
         val isSaved: Boolean,
-        val corpusRecommendationId: String,
+        val corpusRecommendationId: String
     )
 
     data class UiState(

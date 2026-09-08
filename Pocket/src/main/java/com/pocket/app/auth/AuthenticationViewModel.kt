@@ -1,8 +1,6 @@
 package com.pocket.app.auth
 
 import androidx.lifecycle.ViewModel
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.AuthenticationEvents
 import com.pocket.app.AdjustSdkComponent
 import com.pocket.app.AppMode
 import com.pocket.app.UserManager
@@ -29,9 +27,8 @@ class AuthenticationViewModel @AssistedInject constructor(
     private val fxaFeature: FxaFeature,
     private val userManager: UserManager,
     private val adjustSdkComponent: AdjustSdkComponent,
-    private val tracker: Tracker,
     private val mode: AppMode,
-    @Assisted val skipOnboarding: Boolean,
+    @Assisted val skipOnboarding: Boolean
 ) : ViewModel() {
 
     @AssistedFactory interface Factory {
@@ -73,7 +70,6 @@ class AuthenticationViewModel @AssistedInject constructor(
     }
 
     fun onAuthenticateClicked() {
-        tracker.track(AuthenticationEvents.continueButtonClicked())
         if (!checkForInternet()) return
         _events.tryEmit(Authentication.Event.Authenticate)
     }
@@ -124,10 +120,8 @@ class AuthenticationViewModel @AssistedInject constructor(
             {
                 val isSignUp = type != null && type == "signup"
                 if (isSignUp) {
-                    tracker.track(AuthenticationEvents.signupComplete())
                     adjustSdkComponent.trackSignUp()
                 } else {
-                    tracker.track(AuthenticationEvents.loginComplete())
                 }
 
                 // Make sure that when they log out they skip this screen
@@ -172,13 +166,13 @@ class AuthenticationViewModel @AssistedInject constructor(
     }
 
     data class UiState(
-        val screenState: ScreenState = ScreenState.Default,
+        val screenState: ScreenState = ScreenState.Default
     )
 
     sealed class ScreenState(
         val loadingVisible: Boolean = false,
         val offlineVisible: Boolean = false,
-        val mainLayoutVisible: Boolean = false,
+        val mainLayoutVisible: Boolean = false
     ) {
         data object Loading : ScreenState(
             loadingVisible = true

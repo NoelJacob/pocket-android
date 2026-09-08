@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ideashower.readitlater.R
 import com.ideashower.readitlater.databinding.FragmentHomeBinding
-import com.pocket.analytics.ViewableImpressionScrollListener
-import com.pocket.analytics.api.UiEntityable
 import com.pocket.app.auth.AuthenticationActivity
 import com.pocket.app.home.decorators.HorizontalSpacingDecorator
 import com.pocket.app.home.saves.RecentSavesAdapter
@@ -77,7 +75,6 @@ class HomeFragment : AbsPocketFragment() {
         setupRecyclerViews()
         setupBookAnimation()
         setupSwipeRefreshListener()
-        setupAnalytics()
         viewModel.onInitialized()
         recentSavesViewModel.onInitialized()
     }
@@ -184,13 +181,10 @@ class HomeFragment : AbsPocketFragment() {
 
     private fun setupRecyclerViews() {
         addSavesItemDecorator()
-        val savesImpressionScrollListener = ViewableImpressionScrollListener(viewLifecycleOwner)
         val savesAdapter = RecentSavesAdapter(
             viewLifecycleOwner = viewLifecycleOwner,
             viewModel = recentSavesViewModel,
-            impressionScrollListener = savesImpressionScrollListener,
         )
-        binding.recentSavesLayout.savesRecyclerView.addOnScrollListener(savesImpressionScrollListener)
         binding.recentSavesLayout.savesRecyclerView.adapter = savesAdapter
         binding.recentSavesLayout.savesRecyclerView.itemAnimator = InstantChangeItemAnimator()
         savesAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
@@ -206,13 +200,10 @@ class HomeFragment : AbsPocketFragment() {
             }
         })
 
-        val slateImpressionScrollListener = ViewableImpressionScrollListener(viewLifecycleOwner)
-        binding.scrollView.setOnScrollChangeListener(slateImpressionScrollListener)
         binding.slatesRecyclerView.adapter = SlatesAdapter(
             viewLifecycleOwner = viewLifecycleOwner,
             viewModel = viewModel,
             isTablet = FormFactor.isTablet(context),
-            impressionScrollListener = slateImpressionScrollListener
         )
         binding.slatesRecyclerView.itemAnimator = null
 
@@ -242,25 +233,4 @@ class HomeFragment : AbsPocketFragment() {
         }
     }
 
-    private fun setupAnalytics() {
-        binding.recentSavesLayout.recentSavesSeeAllLayout.setUiEntityType(UiEntityable.Type.BUTTON)
-        val impressionScrollListener = ViewableImpressionScrollListener(viewLifecycleOwner)
-        impressionScrollListener.track(
-            binding.signInBanner,
-            binding.signInBanner,
-            viewModel::onSignInBannerViewed,
-        )
-        binding.scrollView.setOnScrollChangeListener(impressionScrollListener)
-        // Also recheck for impressions any time we update UI state and might show/hide something.
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.uiState.collect {
-                yield() // Like Handler.post(), lets the UI finish loading before we check.
-                binding.scrollView.let {
-                    val x = it.scrollX
-                    val y = it.scrollY
-                    impressionScrollListener.onScrollChange(it, x, y, x, y)
-                }
-            }
-        }
-    }
 }

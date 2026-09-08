@@ -25,7 +25,6 @@ composeCompiler {
     includeSourceInformation = true
 }
 dependencies {
-    api(projects.analytics)
     implementation(projects.utilsAndroid)
 
     api(Deps.AirBnb.Lottie.lottie)

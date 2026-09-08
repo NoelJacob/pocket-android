@@ -4,9 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
-import com.pocket.analytics.api.Engageable;
-import com.pocket.analytics.api.EngageableHelper;
-import com.pocket.analytics.api.EngagementListener;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -15,9 +12,8 @@ import org.jetbrains.annotations.Nullable;
  * <p>
  * New Views should generally use {@link ThemedConstraintLayout} rather than RelativeLayout.
  */
-public class ThemedRelativeLayout extends RelativeLayout implements Engageable {
+public class ThemedRelativeLayout extends RelativeLayout {
 
-    protected final EngageableHelper engageable = new EngageableHelper();
 
     public ThemedRelativeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -35,7 +31,6 @@ public class ThemedRelativeLayout extends RelativeLayout implements Engageable {
     }
 
     private void init(AttributeSet attrs) {
-        engageable.obtainStyledAttributes(getContext(), attrs);
     }
 
     @Override
@@ -45,36 +40,14 @@ public class ThemedRelativeLayout extends RelativeLayout implements Engageable {
         return state;
     }
 
-    @Nullable
-    @Override public String getUiEntityIdentifier() {
-        return engageable.getUiEntityIdentifier();
-    }
 
-    @Override public void setUiEntityIdentifier(@Nullable String uiEntityIdentifier) {
-        engageable.setUiEntityIdentifier(uiEntityIdentifier);
-    }
 
-    @Nullable @Override public Type getUiEntityType() {
-        return engageable.getUiEntityType();
-    }
 
-    @Nullable @Override public String getUiEntityComponentDetail() {
-        return engageable.getUiEntityComponentDetail();
-    }
 
-    @Override public void setUiEntityComponentDetail(@Nullable String value) {
-        engageable.setUiEntityComponentDetail(value);
-    }
 
-    @Nullable @Override public String getUiEntityLabel() {
-        return engageable.getUiEntityLabel();
-    }
 
-    @Override public void setEngagementListener(@Nullable EngagementListener listener) {
-        engageable.setEngagementListener(listener);
-    }
 
     @Override public void setOnClickListener(@Nullable OnClickListener l) {
-        super.setOnClickListener(engageable.getWrappedClickListener(l));
+        super.setOnClickListener(l);
     }
 }

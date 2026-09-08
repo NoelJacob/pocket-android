@@ -42,7 +42,7 @@ import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
 import com.ideashower.readitlater.BuildConfig;
 import com.ideashower.readitlater.R;
-import com.pocket.analytics.appevents.SavesEvents;
+
 import com.pocket.app.App;
 import com.pocket.app.AppLifecycle;
 import com.pocket.app.PocketApp;
@@ -790,7 +790,6 @@ public abstract class AbsPocketActivity extends AppCompatActivity implements Ses
 
 			@Override
 			public void onClick(View v) {
-				app().tracker().track(SavesEvents.INSTANCE.clipboardPromptSaveClicked(url));
 
 				ask.bind().dismiss();
 				mAskUrlOverlayVisible = false;

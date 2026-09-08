@@ -28,7 +28,7 @@ public class TagBadgeView extends TextBadgeView {
 		super.init();
 		setBadgeColor(NestedColorStateList.get(getContext(), R.color.pkt_badge_tag));
 		setTextColor(NestedColorStateList.get(getContext(), R.color.pkt_badge_tag_text));
-		setUiEntityIdentifier("badge_tag");
+
 	}
 	
 }

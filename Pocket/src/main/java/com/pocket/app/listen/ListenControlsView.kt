@@ -118,7 +118,6 @@ class ListenControlsView @JvmOverloads constructor(context: Context?, attrs: Att
                 ViewUtil.setVisibility(VISIBLE, views.listenPrev, views.listenNext)
                 views.listenPlayPause.setImageResource(com.pocket.ui.R.drawable.ic_pkt_pause_solid)
                 views.listenPlayPause.contentDescription = resources.getString(com.pocket.ui.R.string.ic_pause)
-                views.listenPlayPause.uiEntityIdentifier = UiEntityIdentifier.LISTEN_PAUSE.value
             }
             PlayState.PLAYING -> {
                 loadingSpinnerDrawable.stop()
@@ -126,7 +125,6 @@ class ListenControlsView @JvmOverloads constructor(context: Context?, attrs: Att
                 ViewUtil.setVisibility(INVISIBLE, views.listenPrev, views.listenNext)
                 views.listenPlayPause.setImageResource(com.pocket.ui.R.drawable.ic_pkt_pause_solid)
                 views.listenPlayPause.contentDescription = resources.getString(com.pocket.ui.R.string.ic_pause)
-                views.listenPlayPause.uiEntityIdentifier = UiEntityIdentifier.LISTEN_PAUSE.value
             }
             PlayState.PAUSED, PlayState.ERROR -> {
                 loadingSpinnerDrawable.stop()
@@ -134,7 +132,6 @@ class ListenControlsView @JvmOverloads constructor(context: Context?, attrs: Att
                 ViewUtil.setVisibility(INVISIBLE, views.listenSkipBack, views.listenSkip)
                 views.listenPlayPause.setImageResource(com.pocket.ui.R.drawable.ic_pkt_play_solid)
                 views.listenPlayPause.contentDescription = resources.getString(com.pocket.ui.R.string.ic_play)
-                views.listenPlayPause.uiEntityIdentifier = UiEntityIdentifier.LISTEN_PLAY.value
             }
             else -> {
                 loadingSpinnerDrawable.stop()

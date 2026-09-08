@@ -1,5 +1,7 @@
 package com.pocket.app.list.tags
 
+import com.pocket.app.list.SavesTab
+
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.ideashower.readitlater.R
 import com.ideashower.readitlater.databinding.FragTagBottomSheetBinding
-import com.pocket.analytics.appevents.SavesTab
+
 import com.pocket.sdk.util.AbsPocketBottomSheetDialogFragment
 import com.pocket.sdk.util.dialog.AlertMessaging
 import com.pocket.ui.view.menu.MenuItem

@@ -17,7 +17,6 @@ public class ImportantPreference extends ActionPreference {
         SettingsImportantButton view = (SettingsImportantButton) layout;
         view.bind().text(label);
         if (uiEntityIdentifier != null) {
-            view.setUiEntityIdentifier(uiEntityIdentifier.value);
         }
     }
 

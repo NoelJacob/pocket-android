@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.ideashower.readitlater.R
 import com.ideashower.readitlater.databinding.ViewHomeSlateDefaultBinding
 import com.ideashower.readitlater.databinding.ViewHomeSlateWideBinding
-import com.pocket.analytics.ViewableImpressionScrollListener
 import com.pocket.app.home.HomeViewModel
 import com.pocket.app.home.decorators.GridSpacingDecorator
 import com.pocket.app.home.decorators.HorizontalSpacingDecorator
@@ -20,7 +19,6 @@ class SlatesAdapter(
     viewLifecycleOwner: LifecycleOwner,
     private val viewModel: HomeViewModel,
     private val isTablet: Boolean,
-    private val impressionScrollListener: ViewableImpressionScrollListener
 ): ListAdapter<HomeViewModel.RecommendationSlateUiState, ViewHolder>(DIFF_CALLBACK) {
 
     init {
@@ -74,11 +72,9 @@ class SlatesAdapter(
         private val minorCardAdapter = SlateMinorCardAdapter(
             viewModel,
             horizontallyScrollingCardWidth,
-            impressionScrollListener,
         )
 
         init {
-            binding.minorCardRecyclerView.addOnScrollListener(impressionScrollListener)
             binding.minorCardRecyclerView.addItemDecoration(HorizontalSpacingDecorator())
             binding.minorCardRecyclerView.adapter = minorCardAdapter
             binding.minorCardRecyclerView.itemAnimator = null
@@ -95,14 +91,12 @@ class SlatesAdapter(
                 setOnClickListener {
                     viewModel.onSeeAllRecommendationsClicked(position, state.title.orEmpty())
                 }
-                engageable.uiEntityComponentDetail = state.title
             }
 
             // first item goes to the hero card
             binding.heroCard.binding.apply {
                 DefaultSlateViewHolderHelper.bind(
                     slateTitle = state.title!!,
-                    impressionScrollListener = impressionScrollListener,
                     viewModel = viewModel,
                     state = state.recommendations.first(),
                     title = title,
@@ -127,11 +121,9 @@ class SlatesAdapter(
 
         private val minorCardAdapter = SlateMinorCardAdapter(
             viewModel = viewModel,
-            impressionScrollListener = impressionScrollListener,
         )
 
         init {
-            binding.minorCardRecyclerView.addOnScrollListener(impressionScrollListener)
             binding.minorCardRecyclerView.addItemDecoration(GridSpacingDecorator())
             binding.minorCardRecyclerView.adapter = minorCardAdapter
             binding.minorCardRecyclerView.itemAnimator = null
@@ -152,7 +144,6 @@ class SlatesAdapter(
             binding.heroCard.binding.apply {
                 DefaultSlateViewHolderHelper.bind(
                     slateTitle = state.title ?: "",
-                    impressionScrollListener = impressionScrollListener,
                     viewModel = viewModel,
                     state = state.recommendations.first(),
                     title = title,

@@ -6,9 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.pocket.analytics.ImpressionComponent;
-import com.pocket.analytics.ItemContent;
-import com.pocket.analytics.Tracker;
+
 import com.pocket.app.App;
 import com.pocket.sdk.api.generated.enums.UiEntityIdentifier;
 import com.pocket.sdk.offline.cache.AssetUser;
@@ -25,10 +23,8 @@ import static android.view.ViewGroup.LayoutParams;
 final class CoverflowAdapter extends RecyclerView.Adapter<CoverflowAdapter.ViewHolder> {
 	
 	private final List<Track> tracks = new ArrayList<>();
-	private final Tracker tracker;
 
 	public CoverflowAdapter(Context context) {
-		this.tracker = App.from(context).tracker();
 	}
 	
 	@Override public int getItemCount() {
@@ -38,7 +34,7 @@ final class CoverflowAdapter extends RecyclerView.Adapter<CoverflowAdapter.ViewH
 	@NonNull @Override public CoverflowAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		final CoverflowItemView itemView = new CoverflowItemView(parent.getContext());
 		itemView.setLayoutParams(new RecyclerView.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
-		tracker.bindUiEntityIdentifier(itemView, UiEntityIdentifier.ITEM.value);
+
 		return new ViewHolder(itemView);
 	}
 	
@@ -77,8 +73,7 @@ final class CoverflowAdapter extends RecyclerView.Adapter<CoverflowAdapter.ViewH
 									thumbnail,
 									AssetUser.forItem(track.timeAdded, track.idKey)
 							)));
-			tracker.bindContent(itemView, new ItemContent(track.idUrl));
-			tracker.enableImpressionTracking(itemView, ImpressionComponent.CONTENT, track);
+
 		}
 	}
 }

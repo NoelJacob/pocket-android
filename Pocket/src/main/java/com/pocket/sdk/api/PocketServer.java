@@ -17,7 +17,8 @@ import javax.inject.Singleton;
 @Singleton
 public class PocketServer {
 	
-	public static final String API_PRODUCTION = "https://api.getpocket.com";
+	// ponytail: local-backend PoC default for debug builds only; release keeps production.
+	public static final String API_PRODUCTION = BuildConfig.DEBUG ? "http://10.0.2.2:8080" : "https://api.getpocket.com";
 	
 	public static final String ARTICLE_VIEW = ArticleView.REMOTE.address;
 	public static final String PERM_LIBRARY = "https://text.getpocket.com/v3beta/loadWebCache";
@@ -80,7 +81,7 @@ public class PocketServer {
 			devServerPrefix = dcfig.forApp("dspref", (String) null);
 			
 			parserApi = dcfig.forApp("atp", 0);
-			customParserApi = dcfig.forApp("catp", PocketServer.ARTICLE_VIEW);
+			customParserApi = dcfig.forApp("catp", BuildConfig.DEBUG ? "http://10.0.2.2:8080/parser" : PocketServer.ARTICLE_VIEW); // ponytail: local parser default for debug
 			
 			snowplow = dcfig.forApp("snwplwclctr", 0);
 			snowplowMicro = dcfig.forApp("snwplwmcr", "192.168.1.?");
@@ -89,7 +90,12 @@ public class PocketServer {
 		private String api() {
 			switch (api.get()) {
 				case 0: return API_PRODUCTION;
-				case 1: return "https://" + devServerPrefix.get() + BuildConfig.API_DEV_SUFFIX;
+				case 1: {
+					String prefix = devServerPrefix.get();
+					// ponytail: allow a full local base URL for developDebug e2e
+					if (prefix != null && prefix.startsWith("http")) return prefix;
+					return "https://" + prefix + BuildConfig.API_DEV_SUFFIX;
+				}
 				default:
 					// Unknown / Invalid - reset to a default
 					return API_PRODUCTION;
@@ -98,7 +104,7 @@ public class PocketServer {
 		
 		private String articleView() {
 			switch (parserApi.get()) {
-				case 0: return ARTICLE_VIEW;
+				case 0: return BuildConfig.DEBUG ? customParserApi.get() : ARTICLE_VIEW;
 				case 1: return customParserApi.get();
 				default:
 					// Unknown / Invalid - reset to a default

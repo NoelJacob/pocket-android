@@ -556,5 +556,4 @@ public abstract class PreferenceViews {
 	}
 
 
-
 }

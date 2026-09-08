@@ -7,8 +7,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import com.pocket.analytics.api.EngageableHelper
-import com.pocket.analytics.api.UiEntityable
 import kotlin.math.absoluteValue
 import kotlin.math.max
 
@@ -18,15 +16,11 @@ import kotlin.math.max
 open class ThemedSwipeConstraintLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0,
-    engageable: EngageableHelper = EngageableHelper(),
-    entityType: UiEntityable.Type? = null,
+    defStyleAttr: Int = 0
 ) : ThemedConstraintLayout2(
     context,
     attrs,
-    defStyleAttr,
-    engageable,
-    entityType
+    defStyleAttr
 ) {
 
     private var touchXStart = 0f
@@ -121,7 +115,7 @@ open class ThemedSwipeConstraintLayout @JvmOverloads constructor(
             this,
             "translationX",
             currentX,
-            -maxSwipeDistance.toFloat(),
+            -maxSwipeDistance.toFloat()
         ).apply {
             setDuration(duration)
             addUpdateListener(OffScreenUpdateListener {
@@ -136,7 +130,7 @@ open class ThemedSwipeConstraintLayout @JvmOverloads constructor(
         ObjectAnimator.ofFloat(
             this, "translationX",
             currentX,
-            maxSwipeDistance.toFloat(),
+            maxSwipeDistance.toFloat()
         ).apply {
             setDuration(duration)
             addUpdateListener(OffScreenUpdateListener {

@@ -17,9 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.StringRes;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.pocket.analytics.api.Engageable;
-import com.pocket.analytics.api.EngageableHelper;
-import com.pocket.analytics.api.EngagementListener;
+
 import com.pocket.ui.R;
 import com.pocket.ui.text.Fonts;
 import com.pocket.ui.text.PressableSpan;
@@ -32,9 +30,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ThemedTextView extends AppCompatTextView implements VisualMargin, Engageable {
+public class ThemedTextView extends AppCompatTextView implements VisualMargin {
 
-	private final EngageableHelper engageable = new EngageableHelper();
 
 	public ThemedTextView(Context context) {
 		this(context, null);
@@ -54,8 +51,7 @@ public class ThemedTextView extends AppCompatTextView implements VisualMargin, E
 		a.recycle();
 
 		if (!isInEditMode()) {
-			engageable.obtainStyledAttributes(getContext(), attrs);
-			engageable.setUiEntityType(Type.BUTTON);
+
 		}
 	}
 	
@@ -159,36 +155,15 @@ public class ThemedTextView extends AppCompatTextView implements VisualMargin, E
 		return (int) Math.ceil(TextViewUtil.descent(this)) + getPaddingBottom();
 	}
 	
-	@Nullable @Override public String getUiEntityIdentifier() {
-		return engageable.getUiEntityIdentifier();
-	}
 
-	@Override public void setUiEntityIdentifier(@Nullable String uiEntityIdentifier) {
-		engageable.setUiEntityIdentifier(uiEntityIdentifier);
-	}
 	
-	@Nullable @Override public Type getUiEntityType() {
-		return engageable.getUiEntityType();
-	}
 	
-	@Nullable @Override public String getUiEntityComponentDetail() {
-		return engageable.getUiEntityComponentDetail();
-	}
 	
-	@Override public void setUiEntityComponentDetail(@Nullable String value) {
-		engageable.setUiEntityComponentDetail(value);
-	}
 
-	@Nullable @Override public String getUiEntityLabel() {
-		return engageable.getUiEntityLabel();
-	}
 
-	@Override public void setEngagementListener(EngagementListener listener) {
-		engageable.setEngagementListener(listener);
-	}
 
 	@Override public void setOnClickListener(@Nullable OnClickListener listener) {
-		super.setOnClickListener(engageable.getWrappedClickListener(listener));
+		super.setOnClickListener(listener);
 	}
 
 	/**
@@ -281,16 +256,16 @@ public class ThemedTextView extends AppCompatTextView implements VisualMargin, E
 		if (resId != 0) {
 			setText(resId);
 			if (!isInEditMode()) {
-				engageable.updateEnUsLabel(getContext(), resId);
+
 			}
 		} else {
 			setText(null);
-			engageable.updateEnUsLabel(null);
+
 		}
 	}
 
 	public void setTextAndUpdateEnUsLabel(CharSequence displayText, String label) {
 		setText(displayText);
-		engageable.updateEnUsLabel(label);
+
 	}
 }

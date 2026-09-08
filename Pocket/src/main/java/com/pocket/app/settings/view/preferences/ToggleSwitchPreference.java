@@ -55,7 +55,6 @@ public class ToggleSwitchPreference extends Preference {
         this.label = label;
         this.summary = summary;
         this.enabledCondition = condition;
-        this.uiEntityIdentifier = identifier;
     }
 
     private CharSequence getSummary() {
@@ -88,7 +87,6 @@ public class ToggleSwitchPreference extends Preference {
         SettingsSwitchView view = (SettingsSwitchView) layout;
         view.bind().isToggle(true).title(label).subtitle(getSummary()).checked(isEnabled() && isChecked);
         if (uiEntityIdentifier != null) {
-            view.setUiEntityIdentifier(uiEntityIdentifier.value);
         }
     }
 

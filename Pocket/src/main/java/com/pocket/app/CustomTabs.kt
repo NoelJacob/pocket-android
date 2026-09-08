@@ -6,7 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsService
 import com.ideashower.readitlater.R
-import com.pocket.analytics.BrowserAnalytics
+
 import com.pocket.sdk.api.ServerFeatureFlags
 import com.pocket.sync.await
 import com.pocket.util.prefs.Preferences
@@ -31,7 +31,6 @@ class CustomTabs
 @Inject constructor(
     @ApplicationContext private val context: Context,
     private val flags: ServerFeatureFlags,
-    private val browserAnalytics: BrowserAnalytics,
     prefs: Preferences,
 ) {
     private val browserPref = prefs.forApp("defaultBrowser", null as String?)
@@ -46,8 +45,7 @@ class CustomTabs
      */
     val willShowChooser: Boolean
         get() {
-            return preferredBrowserPackageName == null &&
-                    browserAnalytics.getDefaultBrowserInfo()?.name == "android"
+            return preferredBrowserPackageName == null
         }
 
     /**

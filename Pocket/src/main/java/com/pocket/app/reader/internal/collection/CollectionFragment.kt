@@ -13,8 +13,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ideashower.readitlater.R
 import com.ideashower.readitlater.databinding.FragmentCollectionBinding
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.CollectionEvents
 import com.pocket.app.auth.AuthenticationActivity
 import com.pocket.app.home.slates.overflow.RecommendationOverflowBottomSheetFragment
 import com.pocket.app.reader.Reader
@@ -33,7 +31,6 @@ import javax.inject.Inject
 class CollectionFragment : AbsPocketFragment(), Reader.NavigationEventHandler {
 
     @Inject lateinit var listen: Listen
-    @Inject lateinit var tracker: Tracker
 
     private val navController: NavController?
         get() = (parentFragment as? NavHostFragment)?.navController
@@ -59,7 +56,7 @@ class CollectionFragment : AbsPocketFragment(), Reader.NavigationEventHandler {
     override fun onCreateViewImpl(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCollectionBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
@@ -70,7 +67,6 @@ class CollectionFragment : AbsPocketFragment(), Reader.NavigationEventHandler {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("Navigation", "CollectionFragment")
-        tracker.track(CollectionEvents.screenView())
         markdown = MarkdownFormatter(requireContext()) { _, url -> readerFragment?.openUrl(url) }
         setupUiStateListener()
         setupToolbar()
@@ -115,7 +111,7 @@ class CollectionFragment : AbsPocketFragment(), Reader.NavigationEventHandler {
             url = args.url,
             toolbarInteractions = viewModel.toolbar,
             toolbarOverflowInteractions = viewModel.toolbar,
-            toolbarUiStateHolder = viewModel.toolbar,
+            toolbarUiStateHolder = viewModel.toolbar
         )
     }
 
@@ -133,7 +129,7 @@ class CollectionFragment : AbsPocketFragment(), Reader.NavigationEventHandler {
             viewLifecycleOwner = viewLifecycleOwner,
             viewModel = viewModel,
             markdown = markdown,
-            corpusRecommendationId = args.url,
+            corpusRecommendationId = args.url
         )
         binding.storyList.itemAnimator = InstantChangeItemAnimator()
 

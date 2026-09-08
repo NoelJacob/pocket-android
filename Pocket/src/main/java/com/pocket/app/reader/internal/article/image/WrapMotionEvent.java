@@ -19,7 +19,6 @@ public class WrapMotionEvent {
     }
 
 
-
     public int getAction() {
             return event.getAction();
     }

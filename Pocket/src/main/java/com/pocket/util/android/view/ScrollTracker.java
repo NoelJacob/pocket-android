@@ -1,7 +1,6 @@
 package com.pocket.util.android.view;
 
 
-
 import android.view.MotionEvent;
 
 import com.pocket.util.java.Logs;

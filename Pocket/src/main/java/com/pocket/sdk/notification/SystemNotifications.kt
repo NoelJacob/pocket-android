@@ -13,10 +13,6 @@ import androidx.core.content.ContextCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.ideashower.readitlater.R
-import com.pocket.analytics.EngagementType
-import com.pocket.analytics.ExternalView
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.UiEntityType
 import com.pocket.app.Jobs
 import com.pocket.app.build.Versioning
 import com.pocket.sdk.api.generated.enums.UiEntityIdentifier
@@ -38,8 +34,7 @@ class SystemNotifications @Inject constructor(
     @ApplicationContext context: Context,
     prefs: Preferences,
     jobs: Jobs,
-    tracker: Tracker,
-    versioning: Versioning,
+    versioning: Versioning
 ) {
 
     val sound: StringPreference = prefs.forUser("notifySound", null as String?)
@@ -50,7 +45,7 @@ class SystemNotifications @Inject constructor(
 
     init {
         jobs.registerCreator(DeviceLevelNotificationSettingWorker::class.java) { c, workerParams ->
-            DeviceLevelNotificationSettingWorker(c, workerParams, this, tracker)
+            DeviceLevelNotificationSettingWorker(c, workerParams, this)
         }
         if (versioning.isFirstRun || versioning.upgraded(7, 48, 0, 0)) {
             jobs.schedulePeriodic(
@@ -94,7 +89,7 @@ class SystemNotifications @Inject constructor(
     private open class PreOreo(
         private val context: Context,
         private val sound: StringPreference,
-        private val lights: BooleanPreference,
+        private val lights: BooleanPreference
     ) : Impl {
         override fun app(): NotificationCompat.Builder {
             return NotificationCompat.Builder(context)
@@ -112,7 +107,7 @@ class SystemNotifications @Inject constructor(
     private class Oreo(
         private val context: Context,
         sound: StringPreference,
-        lights: BooleanPreference,
+        lights: BooleanPreference
     ) : PreOreo(context, sound, lights) {
         init {
             for (channel in Channel.values()) {
@@ -189,22 +184,13 @@ class SystemNotifications @Inject constructor(
 private class DeviceLevelNotificationSettingWorker(
     context: Context,
     workerParams: WorkerParameters,
-    private val notifications: SystemNotifications,
-    private val tracker: Tracker,
+    private val notifications: SystemNotifications
 ) : Worker(context, workerParams) {
 
     override fun doWork(): Result {
         // Check if notifications are enabled for the push notifications channel.
         val areNotificationsEnabled = notifications.areNotificationsEnabled()
 
-        tracker.trackEngagement(
-            ExternalView(
-                UiEntityIdentifier.DEVICE_NOTIFICATIONS_ENABLED.value,
-                UiEntityType.BUTTON,
-            ),
-            EngagementType.GENERAL,
-            areNotificationsEnabled.toString()
-        )
 
         return Result.success()
     }

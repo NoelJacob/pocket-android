@@ -52,7 +52,7 @@ public class SaveButton extends CheckableConstraintLayout {
 		};
 		setOnCheckedChangeListener(checkedListener);
 		bind().clear();
-		engageable.setUiEntityType(Type.BUTTON);
+
 	}
 	
 	private void updateSaveLabel() {
@@ -60,9 +60,6 @@ public class SaveButton extends CheckableConstraintLayout {
 		setContentDescription(label.getText());
 	}
 
-	@Nullable @Override public String getUiEntityLabel() {
-		return label.getUiEntityLabel();
-	}
 
 	public Binder bind() {
 		return binder;

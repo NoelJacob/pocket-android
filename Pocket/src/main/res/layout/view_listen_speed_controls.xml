@@ -14,8 +14,7 @@
         android:contentDescription="@string/lb_faster"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:uiEntityIdentifier="listen_speed_inc" />
+        app:layout_constraintTop_toTopOf="parent" />
     
     <com.pocket.ui.view.button.IconButton
         android:id="@+id/listen_speed_dec"
@@ -25,8 +24,7 @@
         android:contentDescription="@string/lb_slower"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:uiEntityIdentifier="listen_speed_dec" />
+        app:layout_constraintStart_toStartOf="parent" />
     
     <com.pocket.ui.view.themed.ThemedTextView
         android:id="@+id/listen_speed"

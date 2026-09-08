@@ -2,7 +2,6 @@ package com.pocket.sdk.api
 
 import android.content.Context
 import android.view.View
-import com.pocket.analytics.Tracker
 import com.pocket.app.*
 import com.pocket.sdk.Pocket
 import com.pocket.sdk.api.endpoint.AndroidDeviceInfo
@@ -67,7 +66,6 @@ class ServerFeatureFlags @Inject constructor(
     appSync: AppSync,
     private val mode: AppMode,
     @ApplicationContext context: Context,
-    private val tracker: Tracker,
     private val appScope: AppScope,
     private val errorReporter: ErrorHandler,
     dispatcher: AppLifecycleEventDispatcher
@@ -153,7 +151,7 @@ class ServerFeatureFlags @Inject constructor(
 
     private inline fun get(
         flag: String,
-        crossinline enroll: (UnleashAssignment?) -> Unit,
+        crossinline enroll: (UnleashAssignment?) -> Unit
     ): PendingResult<UnleashAssignment?, Throwable> {
         return pocket.suspending { pending ->
             appScope.launch {
@@ -172,7 +170,7 @@ class ServerFeatureFlags @Inject constructor(
 
     private fun enroll(
         assignment: UnleashAssignment?,
-        view: View?,
+        view: View?
     ) {
         if (assignment?.assigned != true) {
             // Not eligible for the test, don't enroll.
@@ -182,7 +180,6 @@ class ServerFeatureFlags @Inject constructor(
             // All A/B tests have to configure variants.
             return
         }
-        tracker.trackVariantEnroll(assignment.name!!, assignment.variant!!, view)
     }
 
     /**

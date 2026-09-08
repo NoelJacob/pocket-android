@@ -8,8 +8,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.core.content.IntentCompat
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.ShareEvents
 import com.pocket.util.android.PendingIntentUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -110,8 +108,6 @@ object ShareSheet {
 
 @AndroidEntryPoint
 class ShareReceiver : BroadcastReceiver() {
-    @Inject
-    lateinit var tracker: Tracker
 
     override fun onReceive(context: Context, intent: Intent?) {
         intent ?: return
@@ -121,12 +117,6 @@ class ShareReceiver : BroadcastReceiver() {
             ComponentName::class.java,
         )
         if (clickedComponent != null) {
-            tracker.track(
-                ShareEvents.shareSheetAppClicked(
-                    clickedComponent.packageName,
-                    intent.getStringExtra(EXTRA_SHARE_URL),
-                ),
-            )
         }
     }
 }

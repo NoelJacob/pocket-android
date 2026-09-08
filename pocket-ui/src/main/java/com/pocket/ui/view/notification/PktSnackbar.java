@@ -447,9 +447,8 @@ public class PktSnackbar extends CoordinatorLayout {
         public Binder onAction(@StringRes int actionText,
                 String uiIdentifier,
                 OnClickListener listener) {
-            action.setTextAndUpdateEnUsLabel(actionText);
+            action.setText(actionText);
             action.setOnClickListener(listener);
-            action.setUiEntityIdentifier(uiIdentifier);
             if (actionText == 0 || listener == null) {
                 action.setVisibility(View.GONE);
             } else {

@@ -1,13 +1,15 @@
 package com.pocket.app.list.list.overflow
 
+import com.pocket.app.list.SavesTab
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.ideashower.readitlater.databinding.FragItemOverflowBottomSheetBinding
-import com.pocket.analytics.api.UiEntityable
-import com.pocket.analytics.appevents.SavesTab
+
+
 import com.pocket.app.PocketSingleton
 import com.pocket.app.tags.ItemsTaggingFragment
 import com.pocket.sdk.api.generated.thing.Item
@@ -96,10 +98,6 @@ class ItemOverflowBottomSheetFragment : AbsPocketBottomSheetDialogFragment() {
     }
 
     private fun setupAnalytics() {
-        binding.addTags.setUiEntityType(UiEntityable.Type.BUTTON)
-        binding.markAsViewed.setUiEntityType(UiEntityable.Type.BUTTON)
-        binding.archive.setUiEntityType(UiEntityable.Type.BUTTON)
-        binding.delete.setUiEntityType(UiEntityable.Type.BUTTON)
     }
 
     companion object {

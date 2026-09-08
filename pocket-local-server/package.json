@@ -1,0 +1,11 @@
+{
+  "name": "pocket-local-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Minimal local backend for Pocket developDebug e2e (save + read Wikipedia article)",
+  "main": "server.js",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

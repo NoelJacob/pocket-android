@@ -1,10 +1,9 @@
 package com.pocket.app.list.bulkedit
 
+import com.pocket.app.list.SavesTab
+
 import androidx.lifecycle.ViewModel
 import com.ideashower.readitlater.R
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.SavesEvents
-import com.pocket.analytics.appevents.SavesTab
 import com.pocket.repository.ItemRepository
 import com.pocket.sdk.api.generated.thing.Item
 import com.pocket.util.StringLoader
@@ -19,8 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BulkEditOverflowBottomSheetViewModel @Inject constructor(
     private val stringLoader: StringLoader,
-    private val itemRepository: ItemRepository,
-    private val tracker: Tracker,
+    private val itemRepository: ItemRepository
 ): ViewModel(), BulkEditOverflowBottomSheetInteractions {
 
     private val _uiState = MutableStateFlow(BulkEditOverflowBottomSheetUiState())
@@ -49,7 +47,6 @@ class BulkEditOverflowBottomSheetViewModel @Inject constructor(
     }
 
     override fun onFavoriteClicked() {
-        tracker.track(SavesEvents.bulkEditOverflowFavoriteClicked(savesTab))
         if (items.containsUnFavorited()) {
             itemRepository.favorite(*items.toTypedArray())
         } else {
@@ -59,18 +56,15 @@ class BulkEditOverflowBottomSheetViewModel @Inject constructor(
     }
 
     override fun onEditTagsClicked() {
-        tracker.track(SavesEvents.bulkEditOverflowAddTagsClicked(savesTab))
         _navigationEvents.tryEmit(BulkEditOverflowNavigationEvent.OpenTagScreen)
     }
 
     override fun onMarkAsViewedClicked() {
-        tracker.track(SavesEvents.bulkEditOverflowMarkAsViewedClicked(savesTab))
         itemRepository.markAsViewed(*items.toTypedArray())
         _navigationEvents.tryEmit(BulkEditOverflowNavigationEvent.Close)
     }
 
     override fun onMarkAsNotViewedClicked() {
-        tracker.track(SavesEvents.bulkEditOverflowMarkAsNotViewedClicked(savesTab))
         itemRepository.markAsNotViewed(*items.toTypedArray())
         _navigationEvents.tryEmit(BulkEditOverflowNavigationEvent.Close)
     }
@@ -78,7 +72,7 @@ class BulkEditOverflowBottomSheetViewModel @Inject constructor(
 
 data class BulkEditOverflowBottomSheetUiState(
     val title: String = "",
-    val favoriteText: String = "",
+    val favoriteText: String = ""
 )
 
 sealed class BulkEditOverflowNavigationEvent {

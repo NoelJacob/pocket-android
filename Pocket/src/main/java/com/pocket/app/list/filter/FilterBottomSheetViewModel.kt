@@ -1,11 +1,10 @@
 package com.pocket.app.list.filter
 
+import com.pocket.app.list.SavesTab
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ideashower.readitlater.R
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.SavesEvents
-import com.pocket.analytics.appevents.SavesTab
 import com.pocket.app.list.list.ListManager
 import com.pocket.app.list.list.ListStatus
 import com.pocket.sdk.api.generated.enums.ItemFilterKey
@@ -20,8 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FilterBottomSheetViewModel @Inject constructor(
     private val listManager: ListManager,
-    private val stringLoader: StringLoader,
-    private val tracker: Tracker,
+    private val stringLoader: StringLoader
 ) : ViewModel(), SortFilterInteractions {
 
     private val _uiState = MutableStateFlow(SortFilterUiState())
@@ -30,7 +28,7 @@ class FilterBottomSheetViewModel @Inject constructor(
     private lateinit var savesTab: SavesTab
 
     override fun onInitialized(
-        savesTab: SavesTab,
+        savesTab: SavesTab
     ) {
         this.savesTab = savesTab
         listManager.sortFilterState.collect(viewModelScope) { state ->
@@ -49,35 +47,35 @@ class FilterBottomSheetViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(
                 filters = FiltersState(
                     viewed = SortFilterRowState(
-                        checked = state.filters.contains(ItemFilterKey.VIEWED),
+                        checked = state.filters.contains(ItemFilterKey.VIEWED)
                     ),
                     notViewed = SortFilterRowState(
-                        checked = state.filters.contains(ItemFilterKey.NOT_VIEWED),
+                        checked = state.filters.contains(ItemFilterKey.NOT_VIEWED)
                     ),
                     shortReads = SortFilterRowState(
                         visible = wordCountBasedAvailable,
-                        checked = state.filters.contains(ItemFilterKey.SHORT_READS),
+                        checked = state.filters.contains(ItemFilterKey.SHORT_READS)
                     ),
                     longReads = SortFilterRowState(
                         visible = wordCountBasedAvailable,
-                        checked = state.filters.contains(ItemFilterKey.LONG_READS),
-                    ),
+                        checked = state.filters.contains(ItemFilterKey.LONG_READS)
+                    )
                 ),
                 sortOrders = SortOrdersState(
                     newest = SortFilterRowState(
-                        checked = sort == ItemSortKey.NEWEST,
+                        checked = sort == ItemSortKey.NEWEST
                     ),
                     oldest = SortFilterRowState(
-                        checked = sort == ItemSortKey.OLDEST,
+                        checked = sort == ItemSortKey.OLDEST
                     ),
                     shortest = SortFilterRowState(
                         visible = wordCountBasedAvailable,
-                        checked = sort == ItemSortKey.SHORTEST,
+                        checked = sort == ItemSortKey.SHORTEST
                     ),
                     longest = SortFilterRowState(
                         visible = wordCountBasedAvailable,
-                        checked = sort == ItemSortKey.LONGEST,
-                    ),
+                        checked = sort == ItemSortKey.LONGEST
+                    )
                 ),
                 sortNewestLabel = if (state.listStatus == ListStatus.SAVES) {
                     stringLoader.getString(R.string.lb_sort_by_newest)
@@ -88,48 +86,40 @@ class FilterBottomSheetViewModel @Inject constructor(
                     stringLoader.getString(R.string.lb_sort_by_oldest)
                 } else {
                     stringLoader.getString(R.string.lb_sort_by_oldest_archive)
-                },
+                }
             )
         }
     }
 
     override fun onNewestClicked() {
-        tracker.track(SavesEvents.sortNewestClicked(savesTab))
         listManager.updateCurrentSort(ItemSortKey.NEWEST)
     }
 
     override fun onOldestClicked() {
-        tracker.track(SavesEvents.sortOldestClicked(savesTab))
         listManager.updateCurrentSort(ItemSortKey.OLDEST)
     }
 
     override fun onShortestClicked() {
-        tracker.track(SavesEvents.sortShortestClicked(savesTab))
         listManager.updateCurrentSort(ItemSortKey.SHORTEST)
     }
 
     override fun onLongestClicked() {
-        tracker.track(SavesEvents.sortLongestClicked(savesTab))
         listManager.updateCurrentSort(ItemSortKey.LONGEST)
     }
 
     override fun onViewedClicked() {
-        tracker.track(SavesEvents.filterViewedClicked(savesTab))
         listManager.onFilterToggled(ItemFilterKey.VIEWED)
     }
 
     override fun onNotViewedClicked() {
-        tracker.track(SavesEvents.filterNotViewedClicked(savesTab))
         listManager.onFilterToggled(ItemFilterKey.NOT_VIEWED)
     }
 
     override fun onShortReadsClicked() {
-        tracker.track(SavesEvents.filterShortReadsClicked(savesTab))
         listManager.onFilterToggled(ItemFilterKey.SHORT_READS)
     }
 
     override fun onLongReadsClicked() {
-        tracker.track(SavesEvents.filterLongReadsClicked(savesTab))
         listManager.onFilterToggled(ItemFilterKey.LONG_READS)
     }
 }
@@ -138,14 +128,14 @@ data class SortFilterUiState(
     val sortOrders: SortOrdersState = SortOrdersState(),
     val filters: FiltersState = FiltersState(),
     val sortNewestLabel: String = "",
-    val sortOldestLabel: String = "",
+    val sortOldestLabel: String = ""
 )
 
 data class SortOrdersState(
     val newest: SortFilterRowState = SortFilterRowState(),
     val oldest: SortFilterRowState = SortFilterRowState(),
     val shortest: SortFilterRowState = SortFilterRowState(),
-    val longest: SortFilterRowState = SortFilterRowState(),
+    val longest: SortFilterRowState = SortFilterRowState()
 )
 
 data class FiltersState(
@@ -157,7 +147,7 @@ data class FiltersState(
 
 data class SortFilterRowState(
     val visible: Boolean = true,
-    val checked: Boolean = false,
+    val checked: Boolean = false
 )
 
 interface SortFilterInteractions {

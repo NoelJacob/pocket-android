@@ -6,7 +6,7 @@ import android.util.SparseArray;
 import android.view.View;
 
 import com.ideashower.readitlater.R;
-import com.pocket.analytics.EngagementType;
+
 import com.pocket.app.settings.AbsPrefsFragment;
 import com.pocket.app.settings.view.preferences.PreferenceViews.EnabledCondition;
 import com.pocket.sdk.api.generated.enums.UiEntityIdentifier;
@@ -99,8 +99,7 @@ public class MultipleChoicePreference extends ActionPreference {
 		}
 
 		if (uiEntityIdentifier != null) {
-			tracker.bindUiEntityValue(view, Integer.toString(newValue));
-			tracker.trackEngagement(view, EngagementType.GENERAL, null, null, null);
+
 		}
 		
 		return allowed;

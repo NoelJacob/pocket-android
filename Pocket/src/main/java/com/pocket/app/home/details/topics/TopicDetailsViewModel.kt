@@ -2,9 +2,6 @@ package com.pocket.app.home.details.topics
 
 import androidx.lifecycle.viewModelScope
 import com.ideashower.readitlater.R
-import com.pocket.analytics.ContentOpenTracker
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.HomeEvents
 import com.pocket.app.home.details.DetailsViewModel
 import com.pocket.app.home.details.toRecommendationUiState
 import com.pocket.repository.ItemRepository
@@ -21,14 +18,11 @@ import javax.inject.Inject
 class TopicDetailsViewModel @Inject constructor(
     private val topicsRepository: TopicsRepository,
     private val stringLoader: StringLoader,
-    private val tracker: Tracker,
     itemRepository: ItemRepository,
-    save: Save,
-    private val contentOpenTracker: ContentOpenTracker,
+    save: Save
 ) : DetailsViewModel(
     itemRepository = itemRepository,
     save = save,
-    tracker = tracker,
 ), TopicDetailsInteractions {
 
     private lateinit var topicId: String
@@ -49,12 +43,12 @@ class TopicDetailsViewModel @Inject constructor(
                 _uiState.edit { copy(
                     screenState = ScreenState.Recommendations,
                     errorSnackBarVisible = false,
-                    errorSnackBarRefreshing = false,
+                    errorSnackBarRefreshing = false
                 ) }
             } catch (e: Exception) {
                 _uiState.edit { copy(
                     errorSnackBarVisible = true,
-                    errorSnackBarRefreshing = false,
+                    errorSnackBarRefreshing = false
                 ) }
                 println("error ${e.message}")
             }
@@ -89,7 +83,7 @@ class TopicDetailsViewModel @Inject constructor(
 
     override fun onErrorRetryClicked() {
         _uiState.edit { copy(
-            errorSnackBarRefreshing = true,
+            errorSnackBarRefreshing = true
         ) }
         refreshTopic()
     }
@@ -97,25 +91,11 @@ class TopicDetailsViewModel @Inject constructor(
     override fun onItemClicked(
         url: String,
         positionInList: Int,
-        corpusRecommendationId: String?,
+        corpusRecommendationId: String?
     ) {
-        contentOpenTracker.track(
-            HomeEvents.topicArticleContentOpen(
-                topicTitle = uiState.value.title,
-                positionInTopic = positionInList,
-                itemUrl = url,
-            )
-        )
         _events.tryEmit(Event.GoToReader(url = url))
     }
 
-    override fun onItemViewed(positionInList: Int, url: String, corpusRecommendationId: String?) {
-        tracker.track(HomeEvents.topicArticleImpression(
-            topicTitle = uiState.value.title,
-            positionInTopic = positionInList,
-            itemUrl = url,
-        ))
-    }
 }
 
 interface TopicDetailsInteractions {

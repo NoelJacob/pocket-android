@@ -70,7 +70,6 @@ public class CacheLimitPreferenceView extends VisualMarginConstraintLayout {
 		assets.addOnCacheSizeChangedListener(mAssetsCacheSizeListener);
 		mAssetsCacheSizeListener.onCacheSizeChanged(assets.getCacheSize());
 
-		engageable.setUiEntityType(Type.BUTTON); // TODO type for slider?
 	}
 	
 	/**

@@ -5,9 +5,6 @@ import android.content.res.TypedArray
 import android.graphics.Paint
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
-import com.pocket.analytics.api.Engageable
-import com.pocket.analytics.api.EngageableHelper
-import com.pocket.analytics.api.UiEntityable
 import com.pocket.ui.R
 import com.pocket.ui.text.Fonts
 import com.pocket.ui.util.NestedColorStateList
@@ -15,16 +12,12 @@ import com.pocket.ui.util.NestedColorStateList
 open class ThemedEditText @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyle: Int = androidx.appcompat.R.attr.editTextStyle,
-    protected val engageable: EngageableHelper = EngageableHelper(),
+    defStyle: Int = androidx.appcompat.R.attr.editTextStyle
 ) :
-    AppCompatEditText(context, attrs, defStyle),
-    Engageable by engageable
+    AppCompatEditText(context, attrs, defStyle)
 {
 
     init {
-        engageable.obtainStyledAttributes(context, attrs)
-        engageable.uiEntityType = UiEntityable.Type.BUTTON
 
         paintFlags = paintFlags or Paint.SUBPIXEL_TEXT_FLAG
         if (attrs != null) {

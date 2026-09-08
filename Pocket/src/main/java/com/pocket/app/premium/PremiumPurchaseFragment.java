@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.ideashower.readitlater.R;
-import com.pocket.analytics.ImpressionableInfoPageAdapter;
+
 import com.pocket.app.help.Help;
 import com.pocket.app.premium.view.PremiumUpgradeWebView;
 import com.pocket.sdk.api.generated.enums.CxtSource;
@@ -26,6 +26,7 @@ import com.pocket.sync.value.Parceller;
 import com.pocket.ui.view.AppBar;
 import com.pocket.ui.view.button.PurchaseStateButtons;
 import com.pocket.ui.view.info.InfoPage;
+import com.pocket.ui.view.info.InfoPageAdapter;
 import com.pocket.ui.view.info.InfoPagingView;
 import com.pocket.ui.view.progress.FullscreenProgressView;
 import com.pocket.util.android.FormFactor;
@@ -65,7 +66,6 @@ public class PremiumPurchaseFragment extends AbsPocketFragment implements Premiu
         View root = inflater.inflate(R.layout.activity_premium_purchase, container, false);
         CxtSource source = Parceller.getStringEnum(getArguments(), ARG_START_SOURCE, CxtSource.JSON_CREATOR);
         if (source != null) {
-            app().tracker().bindUiEntityValue(root, source.value);
         }
         return root;
     }
@@ -87,7 +87,7 @@ public class PremiumPurchaseFragment extends AbsPocketFragment implements Premiu
         final PremiumAnalytics analytics = new PremiumAnalytics(pocket(), FeatureSet.PREMIUM, Interaction.on(getContext()).context, Parceller.getStringEnum(getArguments(), ARG_START_SOURCE, CxtSource.JSON_CREATOR));
 
         final InfoPagingView info = findViewById(R.id.info);
-        ImpressionableInfoPageAdapter adapter = new ImpressionableInfoPageAdapter(
+        InfoPageAdapter adapter = new InfoPageAdapter(
                 getContext(),
                 FormFactor.getWindowWidthPx(getActivity()),
                 Arrays.asList(
@@ -158,9 +158,6 @@ public class PremiumPurchaseFragment extends AbsPocketFragment implements Premiu
                 .addOnPageChangeListener(new ViewPager2.OnPageChangeCallback() {
                     @Override
                     public void onPageSelected(int position) {
-                        analytics.trackCarouselView(position);
-                        app().tracker().bindUiEntityValue(appBar.getLeftIcon(), Integer.toString(position));
-                        appBar.getLeftIcon().setUiEntityLabel(adapter.getPages().get(position).getUiEntityIdentifier());
                     }
                 });
 

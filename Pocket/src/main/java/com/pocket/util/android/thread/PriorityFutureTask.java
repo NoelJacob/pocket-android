@@ -1,7 +1,6 @@
 package com.pocket.util.android.thread;
 
 
-
 public class PriorityFutureTask extends TaskPoolFuture {
 	
 	/**

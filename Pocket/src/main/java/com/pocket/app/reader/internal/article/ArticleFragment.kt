@@ -18,9 +18,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ideashower.readitlater.R
 import com.ideashower.readitlater.databinding.FragmentArticleBinding
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.ViewableImpressionScrollListener
-import com.pocket.analytics.appevents.ArticleViewEvents
 import com.pocket.app.AppMode
 import com.pocket.app.auth.AuthenticationActivity
 import com.pocket.app.home.slates.overflow.RecommendationOverflowBottomSheetFragment
@@ -66,7 +63,6 @@ class ArticleFragment : AbsPocketFragment(), Reader.NavigationEventHandler, NoOb
     @Inject lateinit var premium: Premium
     @Inject lateinit var appPrefs: AppPrefs
     @Inject lateinit var appMode: AppMode
-    @Inject lateinit var tracker: Tracker
     @Inject lateinit var clipboard: Clipboard
 
     private val navController: NavController?
@@ -108,7 +104,7 @@ class ArticleFragment : AbsPocketFragment(), Reader.NavigationEventHandler, NoOb
     override fun onCreateViewImpl(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentArticleBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
@@ -121,7 +117,6 @@ class ArticleFragment : AbsPocketFragment(), Reader.NavigationEventHandler, NoOb
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("Navigation", "ArticleFragment")
-        tracker.track(ArticleViewEvents.screenView())
         setupEventObserver()
         setupToolbar()
         setupWebView()
@@ -216,7 +211,7 @@ class ArticleFragment : AbsPocketFragment(), Reader.NavigationEventHandler, NoOb
                 ShareDialogFragment.show(
                     childFragmentManager,
                     event.item,
-                    event.quote,
+                    event.quote
                 )
             }
             is ArticleScreen.Event.ShowTextSettingsBottomSheet -> {
@@ -283,7 +278,7 @@ class ArticleFragment : AbsPocketFragment(), Reader.NavigationEventHandler, NoOb
             url = args.url,
             toolbarInteractions = viewModel.toolbar,
             toolbarOverflowInteractions = viewModel.toolbar,
-            toolbarUiStateHolder = viewModel.toolbar,
+            toolbarUiStateHolder = viewModel.toolbar
         )
         binding.findInPageToolbar.apply {
             forward().setOnClickListener { findTextViewModel.onNextClicked() }
@@ -300,12 +295,9 @@ class ArticleFragment : AbsPocketFragment(), Reader.NavigationEventHandler, NoOb
     }
 
     private fun setupEndOfArticle() {
-        val impressionScrollListener = ViewableImpressionScrollListener(viewLifecycleOwner)
-        binding.nestedScrollView.setOnScrollChangeListener(impressionScrollListener)
         binding.endOfArticleList.adapter = EndOfArticleRecommendationsAdapter(
             viewLifecycleOwner,
             endOfArticlesViewModel,
-            impressionScrollListener,
         )
         binding.endOfArticleList.addItemDecoration(RecommendationSpacingDecorator())
         if (FormFactor.isTablet(requireContext())) {
@@ -346,7 +338,7 @@ class ArticleFragment : AbsPocketFragment(), Reader.NavigationEventHandler, NoOb
                         .setItems(
                             arrayOf(
                                 getString(R.string.mu_read_later),
-                                getString(R.string.mu_copy_link),
+                                getString(R.string.mu_copy_link)
                             )
                         ) { _, item ->
                             when (item) {
@@ -397,7 +389,7 @@ class ArticleFragment : AbsPocketFragment(), Reader.NavigationEventHandler, NoOb
             },
             onHighlightDeleted = {
                 viewModel.onHighlightDeleted()
-            },
+            }
         ).show(childFragmentManager, HighlightsBottomSheetFragment::class.simpleName)
     }
 
@@ -435,7 +427,7 @@ class ArticleFragment : AbsPocketFragment(), Reader.NavigationEventHandler, NoOb
 
         @JavascriptInterface
         fun scrollToPosition(
-            position: Float,
+            position: Float
         ) {
             allowScrollChange = false
             binding.nestedScrollView.scrollTo(
@@ -450,7 +442,7 @@ class ArticleFragment : AbsPocketFragment(), Reader.NavigationEventHandler, NoOb
 
         @JavascriptInterface
         fun onTextSearch(
-            count: Int,
+            count: Int
         ) {
             findTextViewModel.onTextHighlighted(count)
         }
@@ -487,7 +479,7 @@ class ArticleFragment : AbsPocketFragment(), Reader.NavigationEventHandler, NoOb
 
             viewModel.onInitialPageLoaded(
                 theme.get(binding.webView),
-                resources.displayMetrics.density,
+                resources.displayMetrics.density
             )
         }
 
@@ -497,7 +489,7 @@ class ArticleFragment : AbsPocketFragment(), Reader.NavigationEventHandler, NoOb
         @Suppress("ReturnCount")
         override fun shouldOverrideUrlLoading(
             view: WebView?,
-            request: WebResourceRequest?,
+            request: WebResourceRequest?
         ): Boolean {
             if (request?.url?.host == "getpocket.com") {
                 // ignore getpocket.com links

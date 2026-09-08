@@ -15,6 +15,7 @@ fun getGitSha(): String =
  *
  * First checks environment variables, then checks secrets.properties file.
  */
+// TODO Remove this
 fun Project.getSecret(key: String): String {
     val envValue = System.getenv(key)
     if (envValue != null) return envValue
@@ -27,11 +28,8 @@ fun Project.getSecret(key: String): String {
             )
         )
     } catch (e: Exception) {
-        throw RuntimeException("Missing secrets. Run ./secrets/decrypt.sh", e)
+        return ""
     }
 
-    val propertiesValue = secretProperties.getProperty(key)
-    if (propertiesValue != null) return secretProperties.getProperty(key)
-
-    throw RuntimeException("Missing $key from secret.properties. Maybe you need to re-run ./secrets/decrypt.sh to refresh the secrets?")
+    return secretProperties.getProperty(key) ?: ""
 }

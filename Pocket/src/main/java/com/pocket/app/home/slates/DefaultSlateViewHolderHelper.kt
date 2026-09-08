@@ -3,7 +3,6 @@ package com.pocket.app.home.slates
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.pocket.analytics.*
 import com.pocket.app.home.HomeViewModel
 import com.pocket.app.home.details.RecommendationUiState
 import com.pocket.sdk2.view.LazyAssetBitmap
@@ -21,7 +20,6 @@ object DefaultSlateViewHolderHelper {
     @Suppress("LongMethod")
     fun bind(
         slateTitle: String,
-        impressionScrollListener: ViewableImpressionScrollListener,
         viewModel: HomeViewModel,
         state: RecommendationUiState,
         title: TextView,
@@ -73,17 +71,6 @@ object DefaultSlateViewHolderHelper {
                     url = state.url,
                     slateTitle = slateTitle,
                     positionInSlate = state.index,
-                    corpusRecommendationId = state.corpusRecommendationId,
-                )
-            }
-            impressionScrollListener.track(
-                view = this,
-                identifier = ItemContent(state.url)
-            ) {
-                viewModel.onRecommendationViewed(
-                    slateTitle = slateTitle,
-                    positionInSlate = state.index,
-                    itemUrl = state.url,
                     corpusRecommendationId = state.corpusRecommendationId,
                 )
             }

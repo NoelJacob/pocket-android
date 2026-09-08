@@ -12,8 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 import com.ideashower.readitlater.R;
-import com.pocket.analytics.EngagementType;
-import com.pocket.analytics.Tracker;
+
+
 import com.pocket.app.settings.AbsPrefsFragment;
 import com.pocket.app.settings.view.preferences.CacheLimitPreferenceView;
 import com.pocket.app.settings.view.preferences.CacheLimitPreferenceView.OnCacheLimitChangedListener;
@@ -141,7 +141,6 @@ public class CacheSettingsFragment extends AbsPrefsFragment {
 	
 	private class CacheLimitPreference extends Preference {
 
-		private final Tracker tracker = app().tracker();
 		
 		public CacheLimitPreference() {
 			super(CacheSettingsFragment.this);
@@ -186,8 +185,7 @@ public class CacheSettingsFragment extends AbsPrefsFragment {
 				public void onCacheLimitChanged(long bytes) {
 					sizeTemp.set(bytes);
 					updateSaveButton();
-					tracker.bindUiEntityValue(view, Long.toString(bytes));
-					tracker.trackEngagement(view, EngagementType.GENERAL, null, null, null);
+
 				}
 				
 			});
@@ -200,7 +198,6 @@ public class CacheSettingsFragment extends AbsPrefsFragment {
 			}
 			view.setItemOrder(itemOrder);
 
-			view.setUiEntityIdentifier(UiEntityIdentifier.SETTING_CACHE_SIZE.value);
 		}
 		
 	}

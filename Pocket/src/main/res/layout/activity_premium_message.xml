@@ -86,8 +86,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/message_text"
-                app:layout_constraintBottom_toTopOf="@+id/disclaimer"
-                app:uiEntityIdentifier="joined_premium"/>
+                app:layout_constraintBottom_toTopOf="@+id/disclaimer"/>
 
             <com.pocket.ui.view.themed.ThemedTextView
                 android:id="@+id/disclaimer"

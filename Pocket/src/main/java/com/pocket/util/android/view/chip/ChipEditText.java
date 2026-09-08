@@ -203,7 +203,6 @@ public class ChipEditText extends ThemedRelativeLayout {
 		setClearingEnabled(isClearEnabled);
 		setClickable(true);
 
-		engageable.setUiEntityType(Type.BUTTON);
 	}
 	
 	/** Callback from internal classes to notify that the field validility has changed. */

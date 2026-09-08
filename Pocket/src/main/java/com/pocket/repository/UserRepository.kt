@@ -45,7 +45,8 @@ class SyncEngineUserRepository @Inject constructor(
 }
 
 fun LoginInfo.isLoggedIn() = access_token != null
-fun LoginInfo.hasPremium() = account?.premium_status ?: false
+// ponytail: premium forced unlocked for local builds
+fun LoginInfo.hasPremium() = true
 fun LoginInfo.hasPremiumDisplaySettings(): Boolean {
     // There is no [PremiumFeature] for this.
     // Let's still keep this separate method to encode the knowledge or in case we add it in the future.

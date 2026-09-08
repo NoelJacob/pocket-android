@@ -54,8 +54,6 @@ public class PurchaseButton extends VisualMarginConstraintLayout {
         text.setPadding(text.getPaddingLeft(), text.getPaddingTop(), text.getPaddingRight(), 0);
         subtext.setPadding(subtext.getPaddingLeft(), 0, subtext.getPaddingRight(), subtext.getPaddingBottom());
 
-        engageable.obtainStyledAttributes(getContext(), attrs);
-        engageable.setUiEntityType(Type.BUTTON);
     }
 
     @Override
@@ -88,10 +86,10 @@ public class PurchaseButton extends VisualMarginConstraintLayout {
         public Binder text(@StringRes int resId) {
             if (resId != 0) {
                 text.setText(resId);
-                engageable.updateEnUsLabel(getContext(), resId);
+
             } else {
                 text.setText(null);
-                engageable.updateEnUsLabel(null);
+
             }
             return this;
         }

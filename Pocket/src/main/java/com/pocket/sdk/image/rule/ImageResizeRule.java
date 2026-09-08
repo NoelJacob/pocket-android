@@ -1,8 +1,6 @@
 package com.pocket.sdk.image.rule;
 
 
-
-
 public abstract class ImageResizeRule {
 	
 	protected boolean mAllowUpScale;

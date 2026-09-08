@@ -1,9 +1,6 @@
 package com.pocket.app.home.details.slates
 
 import androidx.lifecycle.viewModelScope
-import com.pocket.analytics.ContentOpenTracker
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.HomeEvents
 import com.pocket.app.home.details.DetailsViewModel
 import com.pocket.app.home.details.toRecommendationUiState
 import com.pocket.repository.HomeRepository
@@ -20,15 +17,12 @@ import javax.inject.Inject
 class SlateDetailsViewModel @Inject constructor(
     private val homeRepository: HomeRepository,
     locale: Locale,
-    private val tracker: Tracker,
     private val stringLoader: StringLoader,
     itemRepository: ItemRepository,
-    save: Save,
-    private val contentOpenTracker: ContentOpenTracker,
+    save: Save
 ) : DetailsViewModel(
     itemRepository = itemRepository,
     save = save,
-    tracker = tracker,
 ) {
 
     private val localeString = locale.toString()
@@ -63,25 +57,7 @@ class SlateDetailsViewModel @Inject constructor(
     }
 
     override fun onItemClicked(url: String, positionInList: Int, corpusRecommendationId: String?) {
-        contentOpenTracker.track(
-            HomeEvents.slateDetailsArticleContentOpen(
-                slateTitle = uiState.value.title,
-                positionInSlate = positionInList,
-                itemUrl = url,
-                corpusRecommendationId = corpusRecommendationId,
-            )
-        )
         _events.tryEmit(Event.GoToReader(url))
     }
 
-    override fun onItemViewed(positionInList: Int, url: String, corpusRecommendationId: String?) {
-        tracker.track(
-            HomeEvents.slateDetailsArticleImpression(
-                slateTitle = uiState.value.title,
-                positionInSlate = positionInList,
-                itemUrl = url,
-                corpusRecommendationId = corpusRecommendationId,
-            )
-        )
-    }
 }

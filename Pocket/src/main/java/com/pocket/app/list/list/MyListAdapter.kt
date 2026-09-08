@@ -10,11 +10,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ideashower.readitlater.R
 import com.ideashower.readitlater.databinding.ViewListItemRowBinding
-import com.pocket.analytics.ImpressionComponent
-import com.pocket.analytics.ItemContent
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.ViewableImpressionScrollListener
-import com.pocket.analytics.api.UiEntityable
 import com.pocket.app.list.BadgeState
 import com.pocket.app.list.BadgeType
 import com.pocket.app.list.ListItemUiState
@@ -36,13 +31,11 @@ import com.pocket.util.android.text.toTealHighlightedSpannableString
 
 class MyListAdapter(
     viewLifecycleOwner: LifecycleOwner,
-    private val tracker: Tracker,
     private val context: Context,
     private val viewModel: MyListViewModel,
     private val bulkEditListItemAnimator: BulkEditListItemAnimator,
     private val theme: Theme,
-    private val recyclerView: RecyclerView,
-    private val saveImpressionScrollListener: ViewableImpressionScrollListener,
+    private val recyclerView: RecyclerView
 ) : RecyclerView.Adapter<MyListAdapter.ItemRowViewHolder>() {
 
     /**
@@ -92,14 +85,10 @@ class MyListAdapter(
     ): RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.root.uiEntityIdentifier = UiEntityIdentifier.ITEM.value
         }
 
         @Suppress("LongMethod")
         fun bind(state: ListItemUiState, position: Int) = with(binding) {
-            root.setUiEntityType(UiEntityable.Type.CARD)
-            tracker.bindContent(root, ItemContent(state.item.id_url?.url!!))
-            tracker.bindUiEntityValue(root, if (state.titleBold) "not_viewed" else "viewed")
             title.text = if (state.showSearchHighlights) {
                 state.title.toTealHighlightedSpannableString(theme, context)
             } else {
@@ -121,11 +110,11 @@ class MyListAdapter(
             setFavoriteImage(favorite, state.favorite)
             setThumbnail(
                 state = state,
-                thumbnailView = thumbnail,
+                thumbnailView = thumbnail
             )
             setupBadges(
                 state = state,
-                badgesLayout = badgesLayout,
+                badgesLayout = badgesLayout
             )
 
             if (state.isInEditMode) {
@@ -174,20 +163,11 @@ class MyListAdapter(
                     )
                 }
             }
-            saveImpressionScrollListener.track(
-                view = root,
-                identifier = state.item.id_url!!.url,
-            ) {
-                viewModel.onSaveViewed(
-                    itemUrl = state.item.id_url!!.url,
-                    position = position
-                )
-            }
         }
 
         private fun setupBadges(
             state: ListItemUiState,
-            badgesLayout: BadgeLayout,
+            badgesLayout: BadgeLayout
         ) {
             badgesLayout.removeAllViews()
             badgesLayout.setBadges(
@@ -227,7 +207,7 @@ class MyListAdapter(
 
         private fun setThumbnail(
             state: ListItemUiState,
-            thumbnailView: ItemThumbnailView,
+            thumbnailView: ItemThumbnailView
         ) {
             thumbnailView.visibility = if (state.thumbnailVisible) {
                 thumbnailView.setImageDrawable(
@@ -255,12 +235,12 @@ class MyListAdapter(
         val DIFF_CALLBACK = object: DiffUtil.ItemCallback<ListItemUiState>() {
             override fun areItemsTheSame(
                 oldItem: ListItemUiState,
-                newItem: ListItemUiState,
+                newItem: ListItemUiState
             ): Boolean = oldItem.item == newItem.item
 
             override fun areContentsTheSame(
                 oldItem: ListItemUiState,
-                newItem: ListItemUiState,
+                newItem: ListItemUiState
             ): Boolean = oldItem == newItem
         }
     }

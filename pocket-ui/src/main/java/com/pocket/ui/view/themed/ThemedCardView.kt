@@ -5,23 +5,16 @@ import androidx.cardview.widget.CardView
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.util.AttributeSet
-import com.pocket.analytics.api.Engageable
-import com.pocket.analytics.api.EngageableHelper
-import com.pocket.analytics.api.UiEntityable
 
 open class ThemedCardView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0,
-    private val engageable: EngageableHelper = EngageableHelper(),
-) : CardView(context, attrs, defStyleAttr),
-    Engageable by engageable
+    defStyleAttr: Int = 0
+) : CardView(context, attrs, defStyleAttr)
 {
     private var cardBackgroundColorStateList: ColorStateList? = null
 
     init {
-        engageable.obtainStyledAttributes(context, attrs)
-        engageable.uiEntityType = UiEntityable.Type.CARD
     }
 
     override fun onCreateDrawableState(extraSpace: Int): IntArray {

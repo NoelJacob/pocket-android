@@ -3,7 +3,6 @@ package com.pocket.app.settings.view.preferences;
 import android.util.SparseArray;
 import android.view.View;
 
-import com.pocket.analytics.Tracker;
 import com.pocket.app.settings.AbsPrefsFragment;
 import com.pocket.app.settings.view.preferences.PreferenceViews.EnabledCondition;
 import com.pocket.sdk.api.generated.enums.UiEntityIdentifier;
@@ -26,7 +25,6 @@ public class ActionPreference extends Preference implements View.OnLongClickList
     private final OnClickAction longPressAction;
 
 	protected final UiEntityIdentifier uiEntityIdentifier;
-	protected final Tracker tracker;
 
 	/** Use {@link PreferenceViews} instead. */
 	@Deprecated
@@ -42,7 +40,7 @@ public class ActionPreference extends Preference implements View.OnLongClickList
 		this.action = action;
 		this.longPressAction = longPressAction;
 		uiEntityIdentifier = identifier;
-		tracker = settings.getAbsPocketActivity().app().tracker();
+
 	}
 
 	public CharSequence getSummary() {
@@ -99,7 +97,6 @@ public class ActionPreference extends Preference implements View.OnLongClickList
 		SettingsSwitchView view = (SettingsSwitchView) layout;
 		view.bind().isToggle(false).title(label).subtitle(getSummary());
 		if (uiEntityIdentifier != null) {
-			view.setUiEntityIdentifier(uiEntityIdentifier.value);
 		}
 	}
 

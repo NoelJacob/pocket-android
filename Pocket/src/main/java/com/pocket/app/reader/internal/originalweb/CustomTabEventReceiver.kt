@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.browser.customtabs.CustomTabsIntent.EXTRA_REMOTEVIEWS_CLICKED_ID
 import com.ideashower.readitlater.R
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.OriginalWebViewEvents
 import com.pocket.app.MainActivity
 import com.pocket.app.reader.internal.originalweb.overlay.OriginalWebOverlayActivity
 import com.pocket.sdk.util.UrlUtil
@@ -16,7 +14,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class CustomTabEventReceiver : BroadcastReceiver() {
 
-    @Inject lateinit var tracker: Tracker
 
     override fun onReceive(context: Context?, intent: Intent?) {
         val overlayIntent = Intent(context, OriginalWebOverlayActivity::class.java).apply {
@@ -24,7 +21,6 @@ class CustomTabEventReceiver : BroadcastReceiver() {
         }
         when (intent?.action) {
             OriginalWebFragment.ACTION_OPEN_MENU -> {
-                tracker.track(OriginalWebViewEvents.pocketMenuClicked())
                 intent.dataString?.let { url ->
                     // the custom tab browser might have changed the url slightly,
                     // i.e. changing http to https.  If the url is still the "same" but slightly

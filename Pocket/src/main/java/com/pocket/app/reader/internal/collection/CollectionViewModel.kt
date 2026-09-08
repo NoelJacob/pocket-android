@@ -3,9 +3,6 @@ package com.pocket.app.reader.internal.collection
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pocket.analytics.ContentOpenTracker
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.CollectionEvents
 import com.pocket.app.reader.queue.UrlListQueueManager
 import com.pocket.app.reader.toolbar.ReaderToolbar
 import com.pocket.app.reader.toolbar.ReaderToolbarDelegate
@@ -29,9 +26,7 @@ class CollectionViewModel @Inject constructor(
     private val collectionRepository: CollectionRepository,
     private val itemRepository: ItemRepository,
     private val articleRepository: ArticleRepository,
-    private val save: Save,
-    private val tracker: Tracker,
-    private val contentOpenTracker: ContentOpenTracker,
+    private val save: Save
 ) : ViewModel(),
     CollectionScreen.Initializer,
     CollectionScreen.StoryInteractions,
@@ -101,7 +96,6 @@ class CollectionViewModel @Inject constructor(
             if (story.isSaved) {
                 itemRepository.delete(url)
             } else {
-                tracker.track(CollectionEvents.recommendationSaveClicked(url))
                 viewModelScope.launch {
                     when (save(url)) {
                         Save.Result.Success -> {
@@ -123,7 +117,6 @@ class CollectionViewModel @Inject constructor(
     }
 
     override fun onCardClicked(url: String) {
-        contentOpenTracker.track(CollectionEvents.contentOpen(url))
         val urls = storyListUiState.value.map { it.url }
         _events.tryEmit(CollectionScreen.Event.OpenUrl(
             url,
@@ -135,7 +128,6 @@ class CollectionViewModel @Inject constructor(
     }
 
     override fun onOverflowClicked(url: String, title: String, corpusRecommendationId: String?) {
-        tracker.track(CollectionEvents.recommendationOverflowClicked())
         _events.tryEmit(CollectionScreen.Event.ShowOverflowBottomSheet(
             url = url,
             title = title,
@@ -152,7 +144,6 @@ class CollectionViewModel @Inject constructor(
         articleRepository,
         save,
         viewModelScope,
-        tracker,
     ) {
 
         fun setupToolbar(url: String) {
@@ -206,7 +197,7 @@ class CollectionViewModel @Inject constructor(
         val screenState: ScreenState = ScreenState.Loading,
         val title: String? = null,
         val author: String? = null,
-        val intro: String? = null,
+        val intro: String? = null
     )
 
     data class StoryUiState(
@@ -216,13 +207,13 @@ class CollectionViewModel @Inject constructor(
         val isSaved: Boolean,
         val imageUrl: String,
         val url: String,
-        val collectionLabelVisible: Boolean,
+        val collectionLabelVisible: Boolean
     )
 
     sealed class ScreenState(
         val loadingVisible: Boolean = false,
         val mainLayoutVisible: Boolean = false,
-        val errorVisible: Boolean = false,
+        val errorVisible: Boolean = false
     ) {
         object Loading : ScreenState(
             loadingVisible = true
@@ -238,7 +229,7 @@ class CollectionViewModel @Inject constructor(
     private fun UnsavedCollectionToolbarState() = ReaderToolbar.ToolbarUiState(
         upVisible = true,
         actionButtonState = ReaderToolbar.ActionButtonState.Save(),
-        shareVisible = true,
+        shareVisible = true
     )
 
     private fun CollectionToolbarState(
@@ -247,16 +238,16 @@ class CollectionViewModel @Inject constructor(
         upVisible = true,
         actionButtonState = actionButtonState,
         shareVisible = true,
-        overflowVisible = true,
+        overflowVisible = true
     )
 
     private fun CollectionToolbarOverflow(
-        isFavorited: Boolean,
+        isFavorited: Boolean
     ) = ReaderToolbar.ToolbarOverflowUiState(
         favoriteVisible = !isFavorited,
         unfavoriteVisible = isFavorited,
         addTagsVisible = true,
         deleteVisible = true,
-        markAsNotViewedVisible = true,
+        markAsNotViewedVisible = true
     )
 }

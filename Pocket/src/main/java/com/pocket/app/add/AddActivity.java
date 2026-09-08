@@ -15,10 +15,8 @@ import androidx.annotation.StyleRes;
 import androidx.core.app.ActivityCompat;
 
 import com.ideashower.readitlater.R;
-import com.pocket.analytics.Tracker;
-import com.pocket.analytics.UiEntityType;
-import com.pocket.analytics.UrlContent;
-import com.pocket.analytics.api.UiEntityable;
+
+
 import com.pocket.app.App;
 import com.pocket.app.SaveExtension;
 import com.pocket.app.session.Session;
@@ -51,7 +49,6 @@ public class AddActivity extends AbsPocketActivity implements Session.Segment, C
 	private static final long TIMEOUT_MS = 6500;
 	private Runnable timeoutRunnable = this::finish;
 
-	private SaveExtensionAnalytics analytics;
 	private @Nullable AddOverlayView overlay;
 
 	@Override
@@ -111,14 +108,9 @@ public class AddActivity extends AbsPocketActivity implements Session.Segment, C
 		lp.windowAnimations = android.R.style.Animation_Dialog;
 		getWindow().setAttributes(lp);
 		
-		analytics = new SaveExtensionAnalytics(pocket(),
-				getActionContext(),
-				app().tracker(),
-				app().pktcache().hasPremium());
 
 		// cancel on outside touches
 		findViewById(android.R.id.content).setOnTouchListener((v, event) -> {
-			analytics.clickOutsideDismiss();
 			finish();
 			return true;
 		});
@@ -163,22 +155,18 @@ public class AddActivity extends AbsPocketActivity implements Session.Segment, C
 
 	private void commitSave(IntentItem intentItem) {
 		if (intentItem.getUrl() != null) {
-			setupTracking(intentItem.getUrl());
 
 			SaveExtension saveExtension = app().saveExtension();
 			if (saveExtension.isOn()) {
 				overlay = new AddOverlayView(this);
 				overlay.bind()
-						.analytics(analytics)
 						.onSavedClick(v -> startPocketActivity())
 						.onTagClick(null);
 				// show the overlay immediately
 				animateIn(overlay);
 
-				analytics.onCommitSave(overlay);
 
 			} else {
-				analytics.onCommitSave(getRoot());
 			}
 			AddItemFromIntentUtil.add(intentItem, app(), Interaction.on(this), this::onSaved);
 			
@@ -187,15 +175,6 @@ public class AddActivity extends AbsPocketActivity implements Session.Segment, C
 		}
 	}
 	
-	private void setupTracking(String url) {
-		Tracker tracker = app().tracker();
-		
-		tracker.bindContent(getRoot(), new UrlContent(url));
-		tracker.bindUiEntityType(getRoot(), UiEntityType.SCREEN);
-		
-		String id = UiEntityable.identifierFromReferrer(ActivityCompat.getReferrer(this));
-		tracker.bindUiEntityIdentifier(getRoot(), id);
-	}
 
 	private void onSaved(Item item, AddItemFromIntentUtil.ErrorStatus status) {
 		// If there's an error we show a message and don't show any actions.

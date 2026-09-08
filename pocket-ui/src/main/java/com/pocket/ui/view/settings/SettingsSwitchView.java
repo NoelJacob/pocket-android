@@ -80,7 +80,6 @@ public class SettingsSwitchView extends VisualMarginConstraintLayout {
 
         setBackground(getResources().getDrawable(R.drawable.cl_pkt_touchable_area));
 
-        engageable.setUiEntityType(Type.BUTTON);
     }
 
     @Override
@@ -89,17 +88,8 @@ public class SettingsSwitchView extends VisualMarginConstraintLayout {
         EnabledUtil.setChildrenEnabled(SettingsSwitchView.this, enabled, false);
     }
 
-    @Nullable @Override public String getUiEntityLabel() {
-        return title.getUiEntityLabel();
-    }
 
-    @Nullable @Override public String getUiEntityValue() {
-        return isVisible(toggleSwitch) ? toggleSwitch.getUiEntityValue() : null;
-    }
 
-    @Nullable @Override public String getEngagementValue() {
-        return isVisible(toggleSwitch) ? toggleSwitch.getEngagementValue() : null;
-    }
 
     public void setChecked(boolean checked) {
         toggleSwitch.setChecked(checked);
@@ -139,7 +129,7 @@ public class SettingsSwitchView extends VisualMarginConstraintLayout {
         }
 
         public Binder title(@Nullable CharSequence val) {
-            title.setTextAndUpdateEnUsLabel(val, val != null ? val.toString() : null);
+            title.setText(val);
             return this;
         }
 

@@ -9,7 +9,6 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import com.ideashower.readitlater.R
 import com.ideashower.readitlater.databinding.FragReportItemBottomSheetBinding
-import com.pocket.analytics.*
 import com.pocket.sdk.util.AbsPocketBottomSheetDialogFragment
 import com.pocket.ui.view.notification.PktSnackbar
 import com.pocket.util.android.hideKeyboard
@@ -19,9 +18,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class ReportItemBottomSheetFragment : AbsPocketBottomSheetDialogFragment() {
-
-    @Inject
-    lateinit var tracker: Tracker
 
     private val viewModel by viewModels<ReportItemBottomSheetViewModel>()
 

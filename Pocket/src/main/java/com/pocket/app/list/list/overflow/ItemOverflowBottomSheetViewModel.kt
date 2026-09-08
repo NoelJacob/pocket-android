@@ -1,11 +1,10 @@
 package com.pocket.app.list.list.overflow
 
+import com.pocket.app.list.SavesTab
+
 import android.graphics.drawable.Drawable
 import androidx.lifecycle.ViewModel
 import com.ideashower.readitlater.R
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.SavesEvents
-import com.pocket.analytics.appevents.SavesTab
 import com.pocket.app.undobar.UndoBar
 import com.pocket.app.undobar.UndoableItemAction.Companion.fromDomainItem
 import com.pocket.data.models.toDomainItem
@@ -25,8 +24,7 @@ class ItemOverflowBottomSheetViewModel @Inject constructor(
     private val itemRepository: ItemRepository,
     private val undoable: UndoBar,
     private val stringLoader: StringLoader,
-    private val drawableLoader: DrawableLoader,
-    private val tracker: Tracker,
+    private val drawableLoader: DrawableLoader
 ) : ViewModel(), ItemOverflowBottomSheetInteractions {
 
     private val _uiState = MutableStateFlow(ItemOverflowBottomSheetUiState())
@@ -37,7 +35,7 @@ class ItemOverflowBottomSheetViewModel @Inject constructor(
 
     override fun onInitialized(
         item: Item,
-        savesTab: SavesTab,
+        savesTab: SavesTab
     ) {
         this.item = item
         this.savesTab = savesTab
@@ -63,12 +61,11 @@ class ItemOverflowBottomSheetViewModel @Inject constructor(
                 drawableLoader.getDrawable(com.pocket.ui.R.drawable.ic_pkt_re_add_line)
             } else {
                 drawableLoader.getDrawable(com.pocket.ui.R.drawable.ic_pkt_archive_line)
-            },
+            }
         ) }
     }
 
     override fun onViewedClicked() {
-        tracker.track(SavesEvents.itemOverflowMarkAsViewedClicked(savesTab))
         itemRepository.toggleViewed(item)
         _uiState.edit { copy(
             screenState = ItemOverflowBottomSheetScreenState.CLOSING
@@ -76,14 +73,12 @@ class ItemOverflowBottomSheetViewModel @Inject constructor(
     }
 
     override fun onTagClicked() {
-        tracker.track(SavesEvents.itemOverflowEditTagsClicked(savesTab))
         _uiState.edit { copy(
             screenState = ItemOverflowBottomSheetScreenState.OPEN_TAG_SCREEN
         ) }
     }
 
     override fun onArchiveClicked() {
-        tracker.track(SavesEvents.itemOverflowArchiveClicked(savesTab))
         val isReAdding = item.status == ItemStatus.ARCHIVED
         if (isReAdding) {
             itemRepository.unArchive(item)
@@ -96,7 +91,6 @@ class ItemOverflowBottomSheetViewModel @Inject constructor(
     }
 
     override fun onDeleteClicked() {
-        tracker.track(SavesEvents.itemOverflowDeleteClicked(savesTab))
         undoable.delete(item)
         _uiState.edit { copy(
             screenState = ItemOverflowBottomSheetScreenState.CLOSING
@@ -111,7 +105,7 @@ data class ItemOverflowBottomSheetUiState(
     val viewedIcon: Drawable? = null,
     val archiveText: String = "",
     val archiveIcon: Drawable? = null,
-    val screenState: ItemOverflowBottomSheetScreenState = ItemOverflowBottomSheetScreenState.SHOWING,
+    val screenState: ItemOverflowBottomSheetScreenState = ItemOverflowBottomSheetScreenState.SHOWING
 )
 
 enum class ItemOverflowBottomSheetScreenState {

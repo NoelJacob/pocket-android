@@ -6,7 +6,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import androidx.core.view.updatePadding
-import com.pocket.analytics.api.UiEntityable
 import com.pocket.ui.R
 import com.pocket.ui.databinding.ViewBadgeBinding
 import com.pocket.ui.util.toPxInt
@@ -18,7 +17,6 @@ class BadgeView(
 ) : ThemedLinearLayout(
     context,
     attrs,
-    entityType = UiEntityable.Type.BUTTON
 ) {
 
     private val binding: ViewBadgeBinding = ViewBadgeBinding.inflate(
@@ -40,7 +38,6 @@ class BadgeView(
                 binding.icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_pkt_tag_line))
                 binding.icon.imageTintList =
                     ContextCompat.getColorStateList(context, R.color.pkt_badge_tag_foreground)
-                engageable.uiEntityIdentifier = "tagBadge"
             }
             Type.EMPHASIZED_TAG -> {
                 background = ContextCompat.getDrawable(context, R.drawable.bg_badge_tag_emphasized)
@@ -50,7 +47,6 @@ class BadgeView(
                 binding.icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_pkt_tag_line))
                 binding.icon.imageTintList =
                     ContextCompat.getColorStateList(context, R.color.pkt_badge_tag_emphasized_foreground)
-                engageable.uiEntityIdentifier = "tagBadge"
             }
             Type.HIGHLIGHT -> {
                 background = ContextCompat.getDrawable(context, R.drawable.bg_badge_highlights)
@@ -60,7 +56,6 @@ class BadgeView(
                 binding.icon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_pkt_highlights_line))
                 binding.icon.imageTintList =
                     ContextCompat.getColorStateList(context, R.color.pkt_themed_amber_2)
-                engageable.uiEntityIdentifier = null
             }
         }
         binding.text.text = text

@@ -2,10 +2,6 @@ package com.pocket.app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pocket.analytics.ContentOpenTracker
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.MainEvents
-import com.pocket.analytics.appevents.ReaderEvents
 import com.pocket.repository.ItemRepository
 import com.pocket.sdk.api.generated.thing.Item
 import com.pocket.util.edit
@@ -25,9 +21,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     preferences: Preferences,
     private val itemRepository: ItemRepository,
-    private val contentOpenTracker: ContentOpenTracker,
-    private val userManager: UserManager,
-    private val tracker: Tracker,
+    private val userManager: UserManager
 ): ViewModel(), MainActivityInteractions {
 
     private val lastTabOpenedPreference = preferences.forUser(LAST_TAB_OPENED, HOME)
@@ -62,18 +56,18 @@ class MainViewModel @Inject constructor(
         when (destination) {
             Destination.HOME -> _uiState.edit { copy(
                 navigationButtonState = NavigationButtonState.HomeChecked,
-                bottomNavigationVisible = true,
+                bottomNavigationVisible = true
             ) }
             Destination.SAVES -> _uiState.edit { copy(
                 navigationButtonState = NavigationButtonState.SavesChecked,
-                bottomNavigationVisible = true,
+                bottomNavigationVisible = true
             ) }
             Destination.SETTINGS -> _uiState.edit { copy(
                 navigationButtonState = NavigationButtonState.SettingsChecked,
-                bottomNavigationVisible = true,
+                bottomNavigationVisible = true
             ) }
             else -> _uiState.edit { copy(
-                bottomNavigationVisible = false,
+                bottomNavigationVisible = false
             ) }
         }
         if (initialEventCollectionStarted) {
@@ -103,14 +97,11 @@ class MainViewModel @Inject constructor(
     }
 
     fun onShowedDeletedAccountToast() {
-        tracker.track(MainEvents.accountDeleteBannerImpression())
         userManager.onShowedDeletedAccountToast()
     }
 
     fun onDeletedAccountExitSurveyClicked(showed: Boolean) {
-        tracker.track(MainEvents.accountDeleteExitSurveyClicked())
         if (showed) {
-            tracker.track(MainEvents.accountDeleteExitSurveyImpression())
         }
     }
 
@@ -166,9 +157,7 @@ class MainViewModel @Inject constructor(
 
             val realUrl = item?.id_url?.url ?: url
             if (httpUrl?.isShortLink() == true) {
-                contentOpenTracker.track(ReaderEvents.pocketCoContentOpen(realUrl))
             } else {
-                contentOpenTracker.track(ReaderEvents.deeplinkContentOpen(realUrl))
             }
             _events.emit(
                 Event.OpenReader(
@@ -195,13 +184,13 @@ class MainViewModel @Inject constructor(
 
     data class UiState(
         val navigationButtonState: NavigationButtonState = NavigationButtonState.HomeChecked,
-        val bottomNavigationVisible: Boolean = true,
+        val bottomNavigationVisible: Boolean = true
     )
 
     sealed class NavigationButtonState(
         val homeNavigationButtonChecked: Boolean = false,
         val savesNavigationButtonChecked: Boolean = false,
-        val settingsNavigationButtonChecked: Boolean = false,
+        val settingsNavigationButtonChecked: Boolean = false
     ) {
         data object HomeChecked: NavigationButtonState(
             homeNavigationButtonChecked = true
@@ -230,7 +219,7 @@ class MainViewModel @Inject constructor(
         data class OpenReader(
             val url: String,
             val openListen: Boolean,
-            val item: Item?,
+            val item: Item?
         ) : Event()
         data object ShowDeletedAccountToast : Event()
         data object ShowBadCredentialsToast : Event()

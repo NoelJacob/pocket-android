@@ -12,8 +12,8 @@ import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ideashower.readitlater.R;
-import com.pocket.analytics.ImpressionComponent;
-import com.pocket.analytics.Tracker;
+
+
 import com.pocket.app.App;
 import com.pocket.sdk.api.generated.enums.UiEntityIdentifier;
 import com.pocket.sdk.offline.cache.AssetUser;
@@ -39,11 +39,9 @@ final class ListenItemAdapter extends RecyclerView.Adapter<ListenItemAdapter.Vie
 	private ListenState state;
 	private Controls controls;
 	private boolean shouldShowDegradedView;
-	private final Tracker tracker;
 	
 	ListenItemAdapter(Context context, ListenPlayerView playerView, OnClick clicks) {
 		this.clicks = clicks;
-		this.tracker = App.from(context).tracker();
 		this.playerView = playerView;
 		
 		final Drawable bars = AppCompatResources.getDrawable(context, com.pocket.ui.R.drawable.ic_pkt_audio_bars_mini);
@@ -121,7 +119,7 @@ final class ListenItemAdapter extends RecyclerView.Adapter<ListenItemAdapter.Vie
 					clicks.onClick(view, index);
 				}
 			});
-			tracker.bindUiEntityIdentifier(holder.itemView, UiEntityIdentifier.ITEM.value);
+
 			return holder;
 
 		} else {
@@ -181,7 +179,7 @@ final class ListenItemAdapter extends RecyclerView.Adapter<ListenItemAdapter.Vie
 						.timeEstimate(modelBindingHelper.listenDurationEstimate(track))
 						.indicator(selected ? selectionIndicator : null);
 			itemRow.setActivated(selected);
-			tracker.enableImpressionTracking(itemRow, ImpressionComponent.CONTENT, track);
+
 		}
 	}
 	

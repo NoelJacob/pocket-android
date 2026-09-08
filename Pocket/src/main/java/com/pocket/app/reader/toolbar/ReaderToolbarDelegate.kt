@@ -2,8 +2,6 @@ package com.pocket.app.reader.toolbar
 
 import android.util.Log
 import com.pocket.data.models.DomainItem
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.ReaderToolbarEvents
 import com.pocket.repository.ArticleRepository
 import com.pocket.repository.ItemRepository
 import com.pocket.sdk.tts.toTrack
@@ -24,8 +22,7 @@ open class ReaderToolbarDelegate(
     private val itemRepository: ItemRepository,
     private val articleRepository: ArticleRepository,
     private val save: Save,
-    private val coroutineScope: CoroutineScope,
-    private val tracker: Tracker,
+    private val coroutineScope: CoroutineScope
 ) : ReaderToolbar.ToolbarInteractions,
     ReaderToolbar.ToolbarOverflowInteractions,
     ReaderToolbar.ToolbarUiStateHolder {
@@ -41,12 +38,10 @@ open class ReaderToolbarDelegate(
     open suspend fun getToolbarOverflow(): ReaderToolbar.ToolbarOverflowUiState = ReaderToolbar.ToolbarOverflowUiState()
 
     override fun onUpClicked() {
-        tracker.track(ReaderToolbarEvents.upClicked())
         _toolbarEvents.tryEmit(ReaderToolbar.ToolbarEvent.GoBack)
     }
 
     override fun onSaveClicked() {
-        tracker.track(ReaderToolbarEvents.saveClicked(url))
         coroutineScope.launch {
             when (save(url)) {
                 Save.Result.Success -> {
@@ -62,13 +57,11 @@ open class ReaderToolbarDelegate(
     }
 
     override fun onArchiveClicked() {
-        tracker.track(ReaderToolbarEvents.archiveClicked())
         itemRepository.archive(url)
         _toolbarEvents.tryEmit(ReaderToolbar.ToolbarEvent.GoBack)
     }
 
     override fun onReAddClicked() {
-        tracker.track(ReaderToolbarEvents.reAddClicked())
         itemRepository.unArchive(url)
         _toolbarUiState.edit { copy(
             actionButtonState = ReaderToolbar.ActionButtonState.Archive()
@@ -76,7 +69,6 @@ open class ReaderToolbarDelegate(
     }
 
     override fun onListenClicked() {
-        tracker.track(ReaderToolbarEvents.listenClicked())
         coroutineScope.launch {
             _toolbarEvents.tryEmit(
                 ReaderToolbar.ToolbarEvent.OpenListen(getItem()?.toTrack())
@@ -85,7 +77,6 @@ open class ReaderToolbarDelegate(
     }
 
     override fun onShareClicked() {
-        tracker.track(ReaderToolbarEvents.shareClicked())
         coroutineScope.launch {
             val item = getDomainItem()
             _toolbarEvents.tryEmit(ReaderToolbar.ToolbarEvent.Share(item?.displayTitle ?: ""))
@@ -93,63 +84,51 @@ open class ReaderToolbarDelegate(
     }
 
     override fun onOverflowClicked() {
-        tracker.track(ReaderToolbarEvents.overflowClicked())
         coroutineScope.launch {
             _toolbarEvents.tryEmit(ReaderToolbar.ToolbarEvent.ShowOverflow(getToolbarOverflow()))
         }
     }
 
     override fun onTextSettingsClicked() {
-        tracker.track(ReaderToolbarEvents.textSettingsClicked())
     }
 
     override fun onViewOriginalClicked() {
-        tracker.track(ReaderToolbarEvents.viewOriginalClicked())
     }
 
     override fun onRefreshClicked() {
-        tracker.track(ReaderToolbarEvents.refreshClicked())
     }
 
     override fun onFindInPageClicked() {
-        tracker.track(ReaderToolbarEvents.findInPageClicked())
     }
 
     override fun onFavoriteClicked() {
-        tracker.track(ReaderToolbarEvents.favoriteClicked())
         itemRepository.favorite(url)
     }
 
     override fun onUnfavoriteClicked() {
-        tracker.track(ReaderToolbarEvents.unfavoriteClicked())
         itemRepository.unfavorite(url)
     }
 
     override fun onAddTagsClicked() {
-        tracker.track(ReaderToolbarEvents.addTagsClicked())
         coroutineScope.launch {
             _toolbarEvents.tryEmit(ReaderToolbar.ToolbarEvent.ShowTagScreen(getItem()))
         }
     }
 
     override fun onHighlightsClicked() {
-        tracker.track(ReaderToolbarEvents.highlightsClicked())
     }
 
     override fun onMarkAsNotViewedClicked() {
-        tracker.track(ReaderToolbarEvents.markAsViewedClicked())
         itemRepository.markAsNotViewed(url)
         _toolbarEvents.tryEmit(ReaderToolbar.ToolbarEvent.GoBack)
     }
 
     override fun onDeleteClicked() {
-        tracker.track(ReaderToolbarEvents.deleteClicked())
         itemRepository.delete(url)
         _toolbarEvents.tryEmit(ReaderToolbar.ToolbarEvent.GoBack)
     }
 
     override fun onReportArticleClicked() {
-        tracker.track(ReaderToolbarEvents.reportClicked())
         articleRepository.reportArticle(url)
         _toolbarEvents.tryEmit(ReaderToolbar.ToolbarEvent.ShowArticleReportedToast)
     }

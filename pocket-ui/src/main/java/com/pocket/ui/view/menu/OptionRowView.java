@@ -39,7 +39,7 @@ public class OptionRowView extends CheckableConstraintLayout {
 		label = findViewById(R.id.label);
 		setBackgroundResource(R.drawable.cl_pkt_touchable_area);
 		setDescendantFocusability(FOCUS_BLOCK_DESCENDANTS);
-		engageable.setUiEntityType(Type.BUTTON);
+
 	}
 	
 	@Override

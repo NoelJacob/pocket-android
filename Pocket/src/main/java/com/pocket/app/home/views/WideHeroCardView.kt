@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.ideashower.readitlater.databinding.ViewHomeSlateWideHeroCardBinding
-import com.pocket.analytics.api.UiEntityable
+
 import com.pocket.ui.util.DimenUtil
 import com.pocket.ui.view.themed.ThemedCardView
 
@@ -31,6 +31,5 @@ class WideHeroCardView(
     }
 
     private fun setupAnalytics() {
-        binding.saveLayout.setUiEntityType(UiEntityable.Type.BUTTON)
     }
 }

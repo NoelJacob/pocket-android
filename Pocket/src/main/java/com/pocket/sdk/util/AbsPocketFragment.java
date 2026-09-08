@@ -23,10 +23,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.pocket.analytics.ImpressionComponent;
-import com.pocket.analytics.ImpressionRequirement;
-import com.pocket.analytics.Tracker;
-import com.pocket.analytics.UiEntityType;
+
 import com.pocket.app.App;
 import com.pocket.app.PocketApp;
 import com.pocket.app.settings.Theme;
@@ -125,13 +122,10 @@ public abstract class AbsPocketFragment extends AppCompatDialogFragment {
 	 * Use instead of {@link #onViewCreated(View, Bundle)}.
 	 */
 	protected void onViewCreatedImpl(@NonNull View view, @Nullable Bundle savedInstanceState) {
-		Tracker tracker = app().tracker();
 		if (getScreenIdentifierString() != null) {
-			tracker.bindUiEntityType(view, UiEntityType.SCREEN);
-			tracker.bindUiEntityIdentifier(view, getScreenIdentifierString());
+
 		} else if (getScreenIdentifier() != null) {
-			tracker.bindUiEntityType(view, UiEntityType.SCREEN);
-			tracker.bindUiEntityIdentifier(view, getScreenIdentifier().value);
+
 		}
 	}
 	
@@ -250,10 +244,6 @@ public abstract class AbsPocketFragment extends AppCompatDialogFragment {
 			parent.setPadding(0, 0, 0, 0);
 		}
 
-		app().tracker().trackImpression(mRootView,
-				ImpressionComponent.SCREEN,
-				ImpressionRequirement.INSTANT,
-				null);
 	}
 
 	/**

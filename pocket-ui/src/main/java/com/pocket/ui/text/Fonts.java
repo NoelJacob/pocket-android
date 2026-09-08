@@ -90,9 +90,35 @@ public class Fonts {
 	public static Typeface get(Context context, Font font) {
 		Typeface typeFace = cache.get(font);
 		if (typeFace == null) {
-			typeFace = Typeface.createFromAsset(context.getAssets(), font.filename);
+			// ponytail: proprietary otf assets are secrets-gated; map to system families.
+			// pocket_icons.ttf ships in-repo and still loads from assets.
+			typeFace = systemTypeface(context, font);
 			cache.put(font, typeFace);
 		}
 		return typeFace;
+	}
+
+	private static Typeface systemTypeface(Context context, Font font) {
+		switch (font) {
+			case ICONS:
+				return Typeface.createFromAsset(context.getAssets(), font.filename);
+			case GRAPHIK_LCG_BOLD:
+				return Typeface.create("sans-serif", Typeface.BOLD);
+			case GRAPHIK_LCG_MEDIUM_ITALIC:
+			case GRAPHIK_LCG_REGULAR_ITALIC:
+				return Typeface.create("sans-serif", Typeface.ITALIC);
+			case GRAPHIK_LCG_MEDIUM:
+			case GRAPHIK_LCG_REGULAR:
+				return Typeface.create("sans-serif", Typeface.NORMAL);
+			case BLANCO_BOLD:
+				return Typeface.create("serif", Typeface.BOLD);
+			case BLANCO_ITALIC:
+			case BLANCO_BOLD_ITALIC:
+				return Typeface.create("serif", Typeface.ITALIC);
+			case BLANCO_REGULAR:
+			case DOYLE_MEDIUM:
+			default:
+				return Typeface.create("serif", Typeface.NORMAL);
+		}
 	}
 }

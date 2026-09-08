@@ -163,7 +163,6 @@ public class ThemedPopupMenu {
 		}
 		public void bind(MenuItem option) {
 			OptionRowView view = ((OptionRowView) itemView);
-			view.setUiEntityIdentifier(option.uiEntityIdentifier);
 			view.setLabel(option.label);
 			view.setIcon(option.icon);
 			view.setOnClickListener(v -> {

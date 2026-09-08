@@ -66,9 +66,7 @@ public class PurchaseStateButtons extends ConstraintLayout {
         progress = findViewById(R.id.loading_progress);
         optionUnknown = findViewById(R.id.option_unknown);
         option1 = findViewById(R.id.option_1);
-        option1.setUiEntityComponentDetail("monthly");
         option2 = findViewById(R.id.option_2);
-        option2.setUiEntityComponentDetail("annual");
         badge = findViewById(R.id.badge);
         option1.bind().clear()
                 .textColor(getResources().getColorStateList(R.color.pkt_themed_grey_1_clickable))

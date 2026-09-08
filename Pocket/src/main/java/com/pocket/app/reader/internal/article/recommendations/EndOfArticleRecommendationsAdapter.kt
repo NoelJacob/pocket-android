@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ideashower.readitlater.databinding.ViewHomeSlateMinorCardBinding
-import com.pocket.analytics.ViewableImpressionScrollListener
 import com.pocket.sdk2.view.LazyAssetBitmap
 import com.pocket.ui.util.LazyBitmapDrawable
 import com.pocket.util.android.repeatOnCreated
@@ -16,7 +15,6 @@ import com.pocket.util.android.repeatOnCreated
 class EndOfArticleRecommendationsAdapter(
     viewLifecycleOwner: LifecycleOwner,
     private val viewModel: EndOfArticleRecommendationsViewModel,
-    private val impressionScrollListener: ViewableImpressionScrollListener,
 ): ListAdapter<EndOfArticleRecommendationsViewModel.CorpusItemUiState,
         EndOfArticleRecommendationsAdapter.RecommendationViewHolder>(DIFF_CALLBACK) {
 
@@ -73,12 +71,6 @@ class EndOfArticleRecommendationsAdapter(
                     title = state.title,
                     corpusRecommendationId = state.corpusRecommendationId
                 ) }
-                impressionScrollListener.track(
-                    view = root,
-                    identifier = state.url
-                ) {
-                    viewModel.onArticleViewed(position, state.url, state.corpusRecommendationId)
-                }
             }
         }
     }

@@ -20,7 +20,6 @@ include(":sync-gen")
 include(":sync-android")
 include(":sync-pocket")
 include(":sync-pocket-android")
-include(":analytics")
 include(":sync-parser")
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

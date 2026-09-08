@@ -70,7 +70,6 @@ public class DisplaySettingsView extends ThemedConstraintLayout {
 		lineHeight = findViewById(R.id.settings_line_height);
 		margin = findViewById(R.id.settings_margin);
 		premiumUpgrade = findViewById(R.id.premium_upgrade);
-		premiumUpgrade.setUiEntityType(Type.BUTTON);
 		setPadding(0,0,0, getResources().getDimensionPixelSize(R.dimen.pkt_space_md));
 		
 		brightness.setMax(100);
@@ -97,8 +96,7 @@ public class DisplaySettingsView extends ThemedConstraintLayout {
 		});
 
 		bind().clear();
-		setUiEntityIdentifier("text_settings_overflow");
-		engageable.setUiEntityType(Type.MENU);
+
 	}
 	
 	private void incrementBrightness(float amt) {

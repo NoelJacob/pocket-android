@@ -3,7 +3,6 @@ package com.pocket.util.java;
 import android.util.Patterns;
 import android.webkit.URLUtil;
 
-import com.pocket.analytics.events.SystemLog;
 import com.pocket.app.App;
 
 import java.util.ArrayList;
@@ -50,8 +49,6 @@ public class UrlFinder {
 				} else {
 					try {
 						// Does this check ever fail? Does Patterns.WEB_URL ever match invalid urls?
-						var log = new SystemLog("url-finder.matched-invalid-url", url);
-						App.getApp().tracker().track(log);
 					} catch (Exception ignored) {
 						// Don't crash if logging fails.
 					}

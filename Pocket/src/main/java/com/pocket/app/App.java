@@ -13,7 +13,7 @@ import android.os.StrictMode;
 
 import com.ideashower.readitlater.R;
 import com.jakewharton.threetenabp.AndroidThreeTen;
-import com.pocket.analytics.Tracker;
+
 import com.pocket.app.build.Versioning;
 import com.pocket.app.help.Help;
 import com.pocket.app.list.list.ListManager;
@@ -111,7 +111,6 @@ public class App extends Application implements Contextual, PocketApp {
 	@Inject Device device;
 	@Inject Versioning versioning;
 	@Inject AppOpen appOpen;
-	@Inject Tracker tracker;
 	@Inject ListManager listManager;
 	@Inject SaveExtension saveExtension;
 	@Inject Preferences preferences;
@@ -230,7 +229,6 @@ public class App extends Application implements Contextual, PocketApp {
 	@Override public Device device() { return device; }
 	@Override public Versioning versioning() { return versioning; }
 	@Override public AppOpen appOpen() { return appOpen; }
-	@Override public Tracker tracker() { return tracker; }
 	@Override public ListManager listManager() { return listManager; }
 	@Override public SaveExtension saveExtension() { return saveExtension; }
 

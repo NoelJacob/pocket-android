@@ -1,12 +1,11 @@
 package com.pocket.app.list.tags
 
+import com.pocket.app.list.SavesTab
+
 import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ideashower.readitlater.R
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.SavesEvents
-import com.pocket.analytics.appevents.SavesTab
 import com.pocket.app.list.list.ListManager
 import com.pocket.repository.TagRepository
 import com.pocket.sdk.api.generated.enums.ItemFilterKey
@@ -21,9 +20,7 @@ import javax.inject.Inject
 class TagBottomSheetViewModel @Inject constructor(
     private val tagRepository: TagRepository,
     private val stringLoader: StringLoader,
-    private val listManager: ListManager,
-    private val tracker: Tracker,
-
+    private val listManager: ListManager
 ) : ViewModel(), TagBottomSheetInteractions {
 
     private val _uiState = MutableStateFlow(TagBottomSheetUiState(
@@ -75,7 +72,6 @@ class TagBottomSheetViewModel @Inject constructor(
     }
 
     override fun onEditClicked() {
-        tracker.track(SavesEvents.tagsOverflowClicked(savesTab))
         enableEditMode()
     }
 
@@ -87,7 +83,6 @@ class TagBottomSheetViewModel @Inject constructor(
     }
 
     override fun onSaveClicked() {
-        tracker.track(SavesEvents.tagsSaveChangesClicked(savesTab))
         val map = mutableMapOf<String, String>()
         tagEditMap.map {
             if (it.key != it.value) {
@@ -99,7 +94,6 @@ class TagBottomSheetViewModel @Inject constructor(
     }
 
     override fun onCancelClicked() {
-        tracker.track(SavesEvents.tagsCancelEditClicked(savesTab))
         disableEditMode()
     }
 
@@ -107,7 +101,7 @@ class TagBottomSheetViewModel @Inject constructor(
         _uiState.edit { copy(
             title = stringLoader.getString(R.string.edit_tags),
             cancelVisibility = View.VISIBLE,
-            overflowVisibility = View.GONE,
+            overflowVisibility = View.GONE
         ) }
         invalidateTagListItemUiState()
     }
@@ -115,7 +109,7 @@ class TagBottomSheetViewModel @Inject constructor(
     private fun disableEditMode() {
         tagEditMap.clear()
         _uiState.edit { TagBottomSheetUiState(
-            title = stringLoader.getString(R.string.lb_tags_autocomplete),
+            title = stringLoader.getString(R.string.lb_tags_autocomplete)
         ) }
         invalidateTagListItemUiState()
     }
@@ -149,7 +143,6 @@ class TagBottomSheetViewModel @Inject constructor(
     }
 
     override fun onDeleteTagConfirmed() {
-        tracker.track(SavesEvents.tagsDeleteClicked(savesTab))
         tagToDelete?.let { tagRepository.deleteTag(it) }
         tagToDelete = null
     }
@@ -171,7 +164,7 @@ data class TagBottomSheetUiState(
     val title: String,
     val cancelVisibility: Int = View.GONE,
     val saveVisibility: Int = View.GONE,
-    val overflowVisibility: Int = View.VISIBLE,
+    val overflowVisibility: Int = View.VISIBLE
 )
 
 sealed class BottomSheetItemUiState
@@ -179,7 +172,7 @@ sealed class BottomSheetItemUiState
 data class TagBottomSheetItemUiState(
     val tag: String,
     val editable: Boolean = false,
-    val trashVisibility: Int = View.GONE,
+    val trashVisibility: Int = View.GONE
 ) : BottomSheetItemUiState()
 
 data class NotTaggedBottomSheetItemUiState(

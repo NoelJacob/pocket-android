@@ -2,8 +2,6 @@ package com.pocket.app.home.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.HomeEvents
 import com.pocket.repository.ItemRepository
 import com.pocket.usecase.Save
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,8 +17,7 @@ import kotlinx.coroutines.launch
  */
 abstract class DetailsViewModel(
     private val itemRepository: ItemRepository,
-    private val save: Save,
-    private val tracker: Tracker,
+    private val save: Save
 ) : ViewModel(), DetailsInteractions {
 
     protected val _uiState = MutableStateFlow(UiState())
@@ -33,10 +30,6 @@ abstract class DetailsViewModel(
         if (isSaved) {
             itemRepository.delete(url)
         } else {
-            tracker.track(HomeEvents.recommendationSaveClicked(
-                url = url,
-                corpusRecommendationId = corpusRecommendationId
-            ))
             viewModelScope.launch {
                 when (save(url)) {
                     Save.Result.Success -> {
@@ -49,14 +42,10 @@ abstract class DetailsViewModel(
     }
 
     override fun onOverflowClicked(url: String, title: String, corpusRecommendationId: String?) {
-        tracker.track(HomeEvents.recommendationOverflowClicked(
-            corpusRecommendationId = corpusRecommendationId,
-            url = url
-        ))
         _events.tryEmit(Event.ShowRecommendationOverflow(
             url = url,
             title = title,
-            corpusRecommendationId = corpusRecommendationId,
+            corpusRecommendationId = corpusRecommendationId
         ))
     }
 
@@ -68,33 +57,33 @@ abstract class DetailsViewModel(
         val recommendations: List<RecommendationUiState> = emptyList(),
         val errorSnackBarVisible: Boolean = false,
         val errorSnackBarRefreshing: Boolean = false,
-        val errorMessage: String = "",
+        val errorMessage: String = ""
     )
 
     sealed class ScreenState(
         val loadingVisible: Boolean = false,
-        val recommendationsVisible: Boolean = false,
+        val recommendationsVisible: Boolean = false
     ) {
         object Loading : ScreenState(
             loadingVisible = true,
-            recommendationsVisible = false,
+            recommendationsVisible = false
         )
 
         object Recommendations : ScreenState(
             loadingVisible = false,
-            recommendationsVisible = true,
+            recommendationsVisible = true
         )
     }
 
     sealed class Event {
         data class GoToReader(
-            val url: String,
+            val url: String
         ) : Event()
         data object GoToSignIn: Event()
         data class ShowRecommendationOverflow(
             val url: String,
             val title: String,
-            val corpusRecommendationId: String?,
+            val corpusRecommendationId: String?
         ) : Event()
     }
 }
@@ -104,10 +93,9 @@ interface DetailsInteractions {
     fun onItemClicked(
         url: String,
         positionInList: Int,
-        corpusRecommendationId: String?,
+        corpusRecommendationId: String?
     )
 
     fun onOverflowClicked(url: String, title: String, corpusRecommendationId: String?)
     fun onErrorRetryClicked()
-    fun onItemViewed(positionInList: Int, url: String, corpusRecommendationId: String?)
 }

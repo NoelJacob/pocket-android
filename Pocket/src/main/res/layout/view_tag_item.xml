@@ -36,7 +36,6 @@
         app:layout_constraintTop_toTopOf="@id/tagText"
         app:layout_constraintBottom_toBottomOf="@id/tagText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:uiEntityIdentifier="tagsDelete"
         />
     
     <com.pocket.ui.view.themed.ThemedView

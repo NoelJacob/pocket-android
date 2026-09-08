@@ -2,9 +2,6 @@ package com.pocket.app.home.saves
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pocket.analytics.ContentOpenTracker
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.HomeEvents
 import com.pocket.app.home.Home
 import com.pocket.repository.ItemRepository
 import com.pocket.repository.SavesRepository
@@ -24,9 +21,7 @@ import javax.inject.Inject
 class RecentSavesViewModel @Inject constructor(
     private val savesRepository: SavesRepository,
     private val modelBindingHelper: ModelBindingHelper,
-    private val itemRepository: ItemRepository,
-    private val tracker: Tracker,
-    private val contentOpenTracker: ContentOpenTracker,
+    private val itemRepository: ItemRepository
 ) : ViewModel(), Home.SavesInteractions {
 
     private val _uiState = MutableStateFlow(UiState())
@@ -53,7 +48,7 @@ class RecentSavesViewModel @Inject constructor(
     }
 
     private fun updateSaves(
-        saves: List<Item>,
+        saves: List<Item>
     ) {
         _recentSavesUiState.edit {
             saves.map { item ->
@@ -82,51 +77,41 @@ class RecentSavesViewModel @Inject constructor(
     }
 
     override fun onFavoriteClicked(item: Item, positionInList: Int) {
-        tracker.track(HomeEvents.recentSavesFavorite(positionInList))
         itemRepository.toggleFavorite(item)
     }
 
     override fun onSaveOverflowClicked(item: Item, itemPosition: Int) {
-        tracker.track(HomeEvents.recentSavesOverflow(itemPosition))
         _events.tryEmit(Home.Event.ShowSaveOverflow(item, itemPosition))
     }
 
     override fun onSeeAllSavesClicked() {
-        tracker.track(HomeEvents.recentSavesSeeAllClicked())
         _events.tryEmit(Home.Event.GoToMyList)
     }
 
     override fun onItemClicked(item: Item, positionInList: Int) {
-        contentOpenTracker.track(
-            HomeEvents.recentSavesCardContentOpen(
-                itemUrl = item.id_url?.url!!,
-                positionInList = positionInList,
-            )
-        )
         _events.tryEmit(Home.Event.GoToReader(item.id_url?.url!!))
     }
 
     override fun onSaveViewed(positionInList: Int, url: String) {
-        tracker.track(HomeEvents.recentSavesImpression(positionInList, url))
     }
 
     data class UiState(
-        val screenState: ScreenState = ScreenState.Loading,
+        val screenState: ScreenState = ScreenState.Loading
     )
 
     sealed class ScreenState(
         val titleVisible: Boolean = false,
         val recentSavesVisible: Boolean = false,
-        val recentSavesLoadingVisible: Boolean = false,
+        val recentSavesLoadingVisible: Boolean = false
     ) {
         object Loading : ScreenState(
             recentSavesLoadingVisible = true,
-            titleVisible = true,
+            titleVisible = true
         )
 
         object Saves : ScreenState(
             recentSavesVisible = true,
-            titleVisible = true,
+            titleVisible = true
         )
 
         object Empty : ScreenState()
@@ -142,6 +127,6 @@ class RecentSavesViewModel @Inject constructor(
         val isFavorited: Boolean,
         val titleIsBold: Boolean,
         // used in analytics
-        val index: Int,
+        val index: Int
     )
 }

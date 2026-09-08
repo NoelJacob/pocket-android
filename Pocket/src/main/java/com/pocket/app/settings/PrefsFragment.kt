@@ -11,8 +11,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.ideashower.readitlater.BuildConfig
 import com.ideashower.readitlater.R
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.SettingsEvents
 import com.pocket.app.App
 import com.pocket.app.AppMode
 import com.pocket.app.CustomTabs
@@ -64,7 +62,6 @@ class PrefsFragment : AbsPrefsFragment() {
     @Inject lateinit var backgroundSync: BackgroundSync
     @Inject lateinit var notifications: SystemNotifications
     @Inject lateinit var mode: AppMode
-    @Inject lateinit var tracker: Tracker
     @Inject lateinit var appPrefs: AppPrefs
     @Inject lateinit var pocketCache: PocketCache
 
@@ -113,7 +110,6 @@ class PrefsFragment : AbsPrefsFragment() {
             // Account management (delete account)
             prefs.add(PreferenceViews.newActionBuilder(this, R.string.setting_account_management)
                 .setOnClickListener {
-                    tracker.track(SettingsEvents.accountManagementRowClicked())
                     AccountManagementFragment.show(absPocketActivity, null)
                 }
                 .build())
@@ -121,7 +117,6 @@ class PrefsFragment : AbsPrefsFragment() {
             // Log Out
             prefs.add(PreferenceViews.newImportantBuilder(this, R.string.setting_logout)
                 .setOnClickListener {
-                    tracker.track(SettingsEvents.logoutRowClicked())
                     AlertMessaging.show(
                         activity,
                         R.string.dg_confirm_t,
@@ -130,7 +125,6 @@ class PrefsFragment : AbsPrefsFragment() {
                         null,
                         R.string.ac_logout
                     ) { _, _ ->
-                        tracker.track(SettingsEvents.logoutConfirmClicked())
                         userManager.logout(absPocketActivity)
                     }
                 }
@@ -139,7 +133,6 @@ class PrefsFragment : AbsPrefsFragment() {
             // Sign up or sign in
             prefs.add(PreferenceViews.newActionBuilder(this, R.string.ac_authenticate)
                 .setOnClickListener {
-                    tracker.track(SettingsEvents.loginRowClicked())
                     AuthenticationActivity.startActivity(requireContext(), true)
                 }
                 .build())
@@ -241,10 +234,9 @@ class PrefsFragment : AbsPrefsFragment() {
         prefs.add(
             PreferenceViews.newActionBuilder(
                 this,
-                R.string.setting_app_icon_label,
+                R.string.setting_app_icon_label
             )
                 .setOnClickListener {
-                    tracker.track(SettingsEvents.appIconRowClicked())
                     findNavController().navigateSafely(PrefsFragmentDirections.goToAppIconSettings())
                 }
                 .setSummaryDefaultUnchecked(appIcons.current.label)
@@ -530,7 +522,7 @@ class PrefsFragment : AbsPrefsFragment() {
         prefs.add(
             newOpenUrlPref(
                 R.string.setting_help,
-                "https://help.getpocket.com/",
+                "https://help.getpocket.com/"
             )
         )
 
@@ -538,13 +530,13 @@ class PrefsFragment : AbsPrefsFragment() {
         prefs.add(
             newOpenUrlPref(
                 R.string.setting_tos,
-                "https://getpocket.com/en/tos/",
+                "https://getpocket.com/en/tos/"
             )
         )
         prefs.add(
             newOpenUrlPref(
                 R.string.setting_privacy,
-                "https://getpocket.com/en/privacy/",
+                "https://getpocket.com/en/privacy/"
             )
         )
         prefs.add(PreferenceViews.newActionBuilder(this, R.string.setting_oss)
@@ -563,13 +555,13 @@ class PrefsFragment : AbsPrefsFragment() {
         prefs.add(
             newOpenUrlPref(
                 R.string.setting_twitter_label,
-                "https://twitter.com/intent/user?screen_name=Pocket",
+                "https://twitter.com/intent/user?screen_name=Pocket"
             )
         )
         prefs.add(
             newOpenUrlPref(
                 R.string.setting_facebook_label,
-                "https://facebook.com/readitlater",
+                "https://facebook.com/readitlater"
             )
         )
 

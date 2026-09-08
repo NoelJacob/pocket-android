@@ -133,8 +133,7 @@
                 style="@style/Pkt_IconButton_Close_Mini"
                 android:layout_height="@dimen/listen_mini_player_height"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:uiEntityIdentifier="listen_mini_close" />
+                app:layout_constraintTop_toTopOf="parent" />
             
             <com.pocket.ui.view.button.IconButton
                 android:id="@+id/listen_mini_play_pause"

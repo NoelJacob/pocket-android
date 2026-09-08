@@ -4,10 +4,6 @@ import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ideashower.readitlater.R
-import com.pocket.analytics.ContentOpenTracker
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.SavesEvents
-import com.pocket.analytics.appevents.SavesTab
 import com.pocket.app.list.MyListViewModel.OnAddClick.*
 import com.pocket.app.list.list.ListManager
 import com.pocket.app.list.list.ListStatus
@@ -46,9 +42,7 @@ class MyListViewModel @Inject constructor(
     private val offlineDownloading: OfflineDownloading,
     private val appSync: AppSync,
     private val searchRepository: SearchRepository,
-    private val notes: Notes,
-    private val tracker: Tracker,
-    private val contentOpenTracker: ContentOpenTracker,
+    private val notes: Notes
 ) : ViewModel(), MyListInteractions {
 
     private val _uiState = MutableStateFlow(MyListUiState())
@@ -95,8 +89,8 @@ class MyListViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     filterCarouselState = it.filterCarouselState.copy(
-                        notesFilterVisible = notesEnabled,
-                    ),
+                        notesFilterVisible = notesEnabled
+                    )
                 )
             }
             onAddClick = when (notesEnabled) {
@@ -171,7 +165,7 @@ class MyListViewModel @Inject constructor(
                         View.VISIBLE
                     } else {
                         View.GONE
-                    },
+                    }
                 ),
                 selectedFilterChipState = ChipState(
                     selected = true,
@@ -282,14 +276,14 @@ class MyListViewModel @Inject constructor(
                         searchMatch,
                         listManager.isSearching,
                         !listManager.isRemoteData,
-                        listManager.sortFilterState.value.search,
+                        listManager.sortFilterState.value.search
                     ),
                     domain = modelBindingHelper.domain(
                         item,
                         searchMatch,
                         listManager.isSearching,
                         !listManager.isRemoteData,
-                        listManager.sortFilterState.value.search,
+                        listManager.sortFilterState.value.search
                     ),
                     timeEstimate = modelBindingHelper.timeEstimate(item)?.let { " · $it" } ?: "",
                     excerpt = excerpt,
@@ -317,7 +311,7 @@ class MyListViewModel @Inject constructor(
                                     } else {
                                         BadgeType.TAG
                                     },
-                                    text = tag.tag ?: "",
+                                    text = tag.tag ?: ""
                                 )
                             )
                         }
@@ -346,9 +340,9 @@ class MyListViewModel @Inject constructor(
                 else -> MyListScreenState.List
             },
             filterCarouselState = it.filterCarouselState.copy(
-                selected = FilterCarouselState.Type.Saves,
+                selected = FilterCarouselState.Type.Saves
             ),
-            editChipState = uiState.value.editChipState.copy(enabled = !isEmpty),
+            editChipState = uiState.value.editChipState.copy(enabled = !isEmpty)
         ) }
     }
 
@@ -357,7 +351,6 @@ class MyListViewModel @Inject constructor(
     }
 
     override fun onAddClicked() {
-        tracker.track(SavesEvents.addButtonClicked())
         requireSignedIn {
             when (onAddClick) {
                 JustOpenAddUrl -> {
@@ -382,7 +375,6 @@ class MyListViewModel @Inject constructor(
 
     override fun onMyListChipClicked() {
         if (exitEditMode()) return
-        tracker.track(SavesEvents.savesChipClicked())
         if (!uiState.value.myListChipState.selected) {
             listManager.setStatusFilter(ListStatus.SAVES)
             _uiState.edit {
@@ -395,7 +387,6 @@ class MyListViewModel @Inject constructor(
 
     override fun onArchiveChipClicked() {
         if (exitEditMode()) return
-        tracker.track(SavesEvents.archiveChipClicked())
         requireSignedIn {
             if (!uiState.value.archiveChipState.selected) {
                 listManager.setStatusFilter(ListStatus.ARCHIVE)
@@ -410,7 +401,6 @@ class MyListViewModel @Inject constructor(
 
     override fun onAllChipClicked() {
         if (exitEditMode()) return
-        tracker.track(SavesEvents.allChipClicked(savesTab))
         showAll()
     }
 
@@ -422,7 +412,6 @@ class MyListViewModel @Inject constructor(
 
     override fun onTaggedChipClicked() {
         if (exitEditMode()) return
-        tracker.track(SavesEvents.taggedChipClicked(savesTab))
 
         requireSignedIn {
             if (!uiState.value.taggedChipState.selected) {
@@ -438,7 +427,6 @@ class MyListViewModel @Inject constructor(
 
     override fun onFavoritesChipClicked() {
         if (exitEditMode()) return
-        tracker.track(SavesEvents.favoritesChipClicked(savesTab))
         requireSignedIn {
             if (!uiState.value.favoritesChipState.selected) {
                 listManager.addFilter(ItemFilterKey.FAVORITE)
@@ -450,7 +438,6 @@ class MyListViewModel @Inject constructor(
 
     override fun onHighlightsChipClicked() {
         if (exitEditMode()) return
-        tracker.track(SavesEvents.highlightsChipClicked(savesTab))
         requireSignedIn {
             if (!uiState.value.highlightsChipState.selected) {
                 listManager.addFilter(ItemFilterKey.HIGHLIGHTED)
@@ -469,8 +456,8 @@ class MyListViewModel @Inject constructor(
                     it.copy(
                         screenState = MyListScreenState.Notes,
                         filterCarouselState = it.filterCarouselState.copy(
-                            selected = FilterCarouselState.Type.Notes,
-                        ),
+                            selected = FilterCarouselState.Type.Notes
+                        )
                     )
                 }
             } else {
@@ -481,7 +468,6 @@ class MyListViewModel @Inject constructor(
 
     override fun onEditChipClicked() {
         if (exitEditMode()) return
-        tracker.track(SavesEvents.editChipClicked(savesTab))
         requireSignedIn {
             _uiState.edit {
                 copy(
@@ -496,26 +482,17 @@ class MyListViewModel @Inject constructor(
 
     override fun onSelectedTagChipClicked() {
         if (exitEditMode()) return
-        tracker.track(SavesEvents.selectedTagChipClicked(savesTab))
         showAll()
     }
 
     override fun onFavoriteClicked(item: Item) {
-        tracker.track(SavesEvents.itemFavoriteButtonClicked(savesTab))
         itemRepository.toggleFavorite(item)
     }
 
     override fun onItemClicked(
         item: Item,
-        positionInList: Int,
+        positionInList: Int
     ) {
-        contentOpenTracker.track(
-            SavesEvents.savedCardContentOpen(
-                itemUrl = item.id_url?.url!!,
-                positionInList = positionInList,
-                savesTab = savesTab,
-            )
-        )
         _navigationEvents.tryEmit(MyListNavigationEvent.GoToReader(
             item,
             _listState.value.indexOf(_listState.value.find { it.item == item })
@@ -524,7 +501,6 @@ class MyListViewModel @Inject constructor(
 
     override fun onSearchClicked() {
         if (exitEditMode()) return
-        tracker.track(SavesEvents.searchChipClicked(savesTab))
         requireSignedIn {
             listManager.isSearching = true
             listManager.clearFilters()
@@ -538,7 +514,6 @@ class MyListViewModel @Inject constructor(
     }
 
     override fun onCloseSearchClicked() {
-        tracker.track(SavesEvents.searchCloseClicked(savesTab))
         clearAndCloseSearch()
     }
 
@@ -569,7 +544,6 @@ class MyListViewModel @Inject constructor(
         searchDelayJob?.cancel()
         searchDelayJob = viewModelScope.launch {
             delay(delayTime)
-            _navigationEvents.tryEmit(MyListNavigationEvent.TrackSearchAnalytics(text))
             if (listManager.sortFilterState.value.search != text || forceListManagerUpdate) {
                 listManager.setSearchText(text)
             }
@@ -577,7 +551,6 @@ class MyListViewModel @Inject constructor(
     }
 
     override fun onSearchDoneClicked() {
-        tracker.track(SavesEvents.searchDoneClicked(savesTab))
         if (delayedSearchText.isNotBlank()) {
             searchRepository.addRecentSearch(delayedSearchText)
         }
@@ -592,7 +565,6 @@ class MyListViewModel @Inject constructor(
 
     override fun onListenClicked() {
         if (exitEditMode()) return
-        tracker.track(SavesEvents.listenChipClicked(savesTab))
         requireSignedIn {
             _navigationEvents.tryEmit(MyListNavigationEvent.GoToListen)
         }
@@ -600,7 +572,6 @@ class MyListViewModel @Inject constructor(
 
     override fun onFilterChipClicked() {
         if (exitEditMode()) return
-        tracker.track(SavesEvents.filterChipClicked(savesTab))
         requireSignedIn {
             _navigationEvents.tryEmit(MyListNavigationEvent.ShowFilterBottomSheet)
         }
@@ -632,25 +603,21 @@ class MyListViewModel @Inject constructor(
     }
 
     override fun onBulkReAddClicked() {
-        tracker.track(SavesEvents.bulkEditReAddClicked(savesTab))
         itemRepository.unArchive(itemsSelectedForBulkEdit)
         exitEditMode()
     }
 
     override fun onBulkArchiveClicked() {
-        tracker.track(SavesEvents.bulkEditArchiveClicked(savesTab))
         undoable.archive(itemsSelectedForBulkEdit.map { fromDomainItem(it.toDomainItem()) })
         exitEditMode()
     }
 
     override fun onBulkDeleteClicked() {
-        tracker.track(SavesEvents.bulkEditDeleteClicked(savesTab))
         undoable.delete(itemsSelectedForBulkEdit)
         exitEditMode()
     }
 
     override fun onBulkEditOverflowClicked() {
-        tracker.track(SavesEvents.bulkEditOverflowClicked(savesTab))
         _navigationEvents.tryEmit(
             MyListNavigationEvent.ShowBulkEditOverflowBottomSheet(
                 itemsSelectedForBulkEdit
@@ -680,7 +647,6 @@ class MyListViewModel @Inject constructor(
     }
 
     override fun onTagBadgeClicked(tag: String) {
-        tracker.track(SavesEvents.itemTagButtonClicked(savesTab))
         listManager.setTag(tag)
     }
 
@@ -714,31 +680,26 @@ class MyListViewModel @Inject constructor(
 
     override fun onShareItemClicked(item: Item) {
         val domainItem = item.toDomainItem()
-        tracker.track(SavesEvents.itemShareButtonClicked(savesTab, domainItem.idUrl))
         val showShare = MyListNavigationEvent.ShowShare(domainItem)
         _navigationEvents.tryEmit(showShare)
     }
 
     override fun onItemOverflowClicked(item: Item) {
-        tracker.track(SavesEvents.itemOverflowButtonClicked(savesTab))
         _navigationEvents.tryEmit(MyListNavigationEvent.ShowItemOverflow(item))
     }
 
     override fun onShortReadFilterClicked() {
-        tracker.track(SavesEvents.shortReadsFilterClicked(savesTab))
         onCloseSearchClicked()
         listManager.addFilter(ItemFilterKey.SHORT_READS)
     }
 
     override fun onLongReadFilterClicked() {
-        tracker.track(SavesEvents.longReadsFilterClicked(savesTab))
         clearAndCloseSearch()
         listManager.addFilter(ItemFilterKey.LONG_READS)
     }
 
     override fun onSelectedFilterChipClicked() {
         if (exitEditMode()) return
-        tracker.track(SavesEvents.selectedFilterChipClicked(savesTab))
         showAll()
     }
 
@@ -759,15 +720,9 @@ class MyListViewModel @Inject constructor(
     }
 
     override fun onSaveViewed(itemUrl: String, position: Int) {
-        tracker.track(SavesEvents.saveImpression(
-            positionInList = position,
-            itemUrl = itemUrl,
-            savesTab = savesTab,
-        ))
     }
 
     fun onSignedOutEmptyButtonClicked() {
-        tracker.track(SavesEvents.emptySignedOutButtonClicked())
         _navigationEvents.tryEmit(MyListNavigationEvent.GoToSignIn)
     }
 
@@ -800,31 +755,31 @@ data class MyListUiState(
     val emptyViewState: EmptyViewState = EmptyViewState.All,
     val isRefreshing: Boolean = false,
     val recentSearchVisibility: Int = View.GONE,
-    val searchHint: String = "",
+    val searchHint: String = ""
 ) {
     val allChipState: ChipState get() = ChipState(
         selected = filterCarouselState.selected == FilterCarouselState.Type.Saves &&
-                filterCarouselState.savesFilter == SavesFilter.All,
+                filterCarouselState.savesFilter == SavesFilter.All
     )
     val taggedChipState: ChipState get() = ChipState(
         selected = filterCarouselState.selected == FilterCarouselState.Type.Saves &&
-                filterCarouselState.savesFilter == SavesFilter.Tagged,
+                filterCarouselState.savesFilter == SavesFilter.Tagged
     )
     val favoritesChipState: ChipState get() = ChipState(
         selected = filterCarouselState.selected == FilterCarouselState.Type.Saves &&
-                filterCarouselState.savesFilter == SavesFilter.Favorites,
+                filterCarouselState.savesFilter == SavesFilter.Favorites
     )
     val highlightsChipState: ChipState get() = ChipState(
         selected = filterCarouselState.selected == FilterCarouselState.Type.Saves &&
-                filterCarouselState.savesFilter == SavesFilter.Highlighted,
+                filterCarouselState.savesFilter == SavesFilter.Highlighted
     )
     val notesChipState: ChipState get() = ChipState(
         selected = filterCarouselState.selected == FilterCarouselState.Type.Notes,
-        visibility = if (filterCarouselState.notesFilterVisible) View.VISIBLE else View.GONE,
+        visibility = if (filterCarouselState.notesFilterVisible) View.VISIBLE else View.GONE
     )
     val filterChipState: ChipState get() = ChipState(
         badgeVisible = filterCarouselState.selected == FilterCarouselState.Type.Saves &&
-                filterCarouselState.savesFilter == SavesFilter.FilterMenu,
+                filterCarouselState.savesFilter == SavesFilter.FilterMenu
     )
 }
 
@@ -836,7 +791,7 @@ data class MyListScreenState(
     val searchBarVisible: Int = View.GONE,
     val searchLandingVisible: Int = View.GONE,
     val filterCarouselVisible: Int = View.GONE,
-    val notesVisible: Int = View.GONE,
+    val notesVisible: Int = View.GONE
 ) {
 
     companion object {
@@ -872,17 +827,17 @@ data class MyListScreenState(
 
         val SearchLoading = MyListScreenState(
             searchBarVisible = View.VISIBLE,
-            loadingVisible = View.VISIBLE,
+            loadingVisible = View.VISIBLE
         )
 
         val SearchEmpty = MyListScreenState(
             searchBarVisible = View.VISIBLE,
-            emptyVisible = View.VISIBLE,
+            emptyVisible = View.VISIBLE
         )
 
         val Notes = MyListScreenState(
             notesVisible = View.VISIBLE,
-            filterCarouselVisible = View.VISIBLE,
+            filterCarouselVisible = View.VISIBLE
         )
     }
 }
@@ -890,7 +845,7 @@ data class MyListScreenState(
 data class FilterCarouselState(
     val selected: Type = Type.Saves,
     val savesFilter: SavesFilter = SavesFilter.All,
-    val notesFilterVisible: Boolean = false,
+    val notesFilterVisible: Boolean = false
 ) {
     enum class Type {
         Saves, Notes,
@@ -917,7 +872,7 @@ sealed class EmptyViewState(
     val highlightsVisible: Boolean = false,
     val archiveVisible: Boolean = false,
     val specificTagVisible: Boolean = false,
-    val searchVisible: Boolean = false,
+    val searchVisible: Boolean = false
 ) {
     data object SignedOut: EmptyViewState(
         signedOutVisible = true
@@ -961,7 +916,7 @@ data class ListItemUiState(
     val isSelectedForBulkEdit: Boolean = false,
     val showSearchHighlights: Boolean = false,
     val isInArchive: Boolean = false,
-    val index: Int,
+    val index: Int
 )
 
 data class RecentSearchItemUiState(
@@ -970,7 +925,7 @@ data class RecentSearchItemUiState(
 
 data class BadgeState(
     val type: BadgeType,
-    val text: String = "",
+    val text: String = ""
 )
 
 enum class BadgeType {
@@ -1001,7 +956,7 @@ sealed class MyListNavigationEvent {
     ): MyListNavigationEvent()
 
     data class ShowShare(
-        val item: DomainItem,
+        val item: DomainItem
     ): MyListNavigationEvent()
 
     data class ShowItemOverflow(
@@ -1010,9 +965,6 @@ sealed class MyListNavigationEvent {
      object SetSearchFocus: MyListNavigationEvent()
     object CloseKeyboard: MyListNavigationEvent()
     data class UpdateSearch(
-        val searchText: String
-    ): MyListNavigationEvent()
-    data class TrackSearchAnalytics(
         val searchText: String
     ): MyListNavigationEvent()
 }
@@ -1043,7 +995,7 @@ interface MyListInteractions {
     fun onFavoriteClicked(item: Item)
     fun onItemClicked(
         item: Item,
-        positionInList: Int,
+        positionInList: Int
     )
     fun onItemSelectedForBulkEdit(item: Item)
     fun onBulkEditSelectAllClicked()

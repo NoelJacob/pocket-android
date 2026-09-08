@@ -2,9 +2,6 @@ package com.pocket.app.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pocket.analytics.ContentOpenTracker
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.HomeEvents
 import com.pocket.app.home.details.RecommendationUiState
 import com.pocket.app.home.details.toRecommendationUiState
 import com.pocket.data.models.DomainSlate
@@ -46,11 +43,9 @@ class HomeViewModel @Inject constructor(
     private val itemRepository: ItemRepository,
     private val userRepository: UserRepository,
     private val save: Save,
-    private val tracker: Tracker,
     private val stringLoader: StringLoader,
-    private val contentOpenTracker: ContentOpenTracker,
     private val errorHandler: ErrorHandler,
-    private val clock: Clock,
+    private val clock: Clock
 ) : ViewModel(),
     Home.Interactions,
     Home.RecommendationInteractions,
@@ -160,7 +155,7 @@ class HomeViewModel @Inject constructor(
                         screenState = ScreenState.Slates,
                         isRefreshing = false,
                         errorSnackBarRefreshing = false,
-                        errorSnackBarVisible = false,
+                        errorSnackBarVisible = false
                     )
                 }
                 lastRefresh = clock.millis()
@@ -193,7 +188,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun updateSlates(
-        slates: List<DomainSlate>,
+        slates: List<DomainSlate>
     ) {
 
         _slatesUiState.edit {
@@ -203,14 +198,14 @@ class HomeViewModel @Inject constructor(
                     errorHandler.reportOnProductionOrThrow(RuntimeException(
                         "Slate is empty: " + listOf(
                             "title = ${slate.title}",
-                            "locale = $localeString",
+                            "locale = $localeString"
                         )
                     ))
                     null
                 } else {
                     slate.toRecommendationSlateUiState(
                         stringLoader = stringLoader,
-                        recommendationsPerSlate = RECOMMENDATIONS_PER_SLATE,
+                        recommendationsPerSlate = RECOMMENDATIONS_PER_SLATE
                     )
                 }
             }
@@ -222,7 +217,7 @@ class HomeViewModel @Inject constructor(
             topics.map { topic ->
                 TopicUiState(
                     title = topic.display_name.orEmpty(),
-                    topicId = topic.topic!!,
+                    topicId = topic.topic!!
                 )
             }
         }
@@ -232,12 +227,6 @@ class HomeViewModel @Inject constructor(
         if (isSaved) {
             itemRepository.delete(url)
         } else {
-            tracker.track(
-                HomeEvents.recommendationSaveClicked(
-                    url = url,
-                    corpusRecommendationId = corpusRecommendationId
-                )
-            )
             viewModelScope.launch {
                 when (save(url)) {
                     Save.Result.Success -> {
@@ -253,46 +242,30 @@ class HomeViewModel @Inject constructor(
         url: String,
         slateTitle: String,
         positionInSlate: Int,
-        corpusRecommendationId: String?,
+        corpusRecommendationId: String?
     ) {
-        contentOpenTracker.track(
-            HomeEvents.slateArticleContentOpen(
-                slateTitle = slateTitle,
-                positionInSlate = positionInSlate,
-                itemUrl = url,
-                corpusRecommendationId = corpusRecommendationId,
-            )
-        )
         _events.tryEmit(Home.Event.GoToReader(url = url))
     }
 
     override fun onRecommendationOverflowClicked(
         url: String,
         title: String,
-        corpusRecommendationId: String?,
+        corpusRecommendationId: String?
     ) {
-        tracker.track(
-            HomeEvents.recommendationOverflowClicked(
-                corpusRecommendationId = corpusRecommendationId,
-                url = url
-            )
-        )
         _events.tryEmit(
             Home.Event.ShowRecommendationOverflow(
                 url = url,
                 title = title,
-                corpusRecommendationId = corpusRecommendationId,
+                corpusRecommendationId = corpusRecommendationId
             )
         )
     }
 
     override fun onSeeAllRecommendationsClicked(index: Int, slateTitle: String) {
-        tracker.track(HomeEvents.slateSeeAllClicked(slateTitle = slateTitle))
         _events.tryEmit(Home.Event.GoToSlateDetails(index))
     }
 
     override fun onTopicClicked(topicId: String, topicTitle: String) {
-        tracker.track(HomeEvents.topicClicked(topicTitle))
         _events.tryEmit(Home.Event.GoToTopicDetails(topicId))
     }
 
@@ -300,22 +273,14 @@ class HomeViewModel @Inject constructor(
         slateTitle: String,
         positionInSlate: Int,
         itemUrl: String,
-        corpusRecommendationId: String?,
+        corpusRecommendationId: String?
     ) {
-        tracker.track(
-            HomeEvents.slateArticleImpression(
-                slateTitle = slateTitle,
-                positionInSlate = positionInSlate,
-                itemUrl = itemUrl,
-                corpusRecommendationId = corpusRecommendationId,
-            )
-        )
     }
 
     override fun onErrorRetryClicked() {
         _uiState.edit {
             copy(
-                errorSnackBarRefreshing = true,
+                errorSnackBarRefreshing = true
             )
         }
         refreshData()
@@ -324,7 +289,7 @@ class HomeViewModel @Inject constructor(
     override fun onSwipedToRefresh() {
         _uiState.edit {
             copy(
-                isRefreshing = true,
+                isRefreshing = true
             )
         }
         refreshData()
@@ -338,17 +303,15 @@ class HomeViewModel @Inject constructor(
         _uiState.edit {
             copy(
                 errorSnackBarVisible = false,
-                errorSnackBarRefreshing = false,
+                errorSnackBarRefreshing = false
             )
         }
     }
 
     fun onSignInBannerViewed() {
-        tracker.track(HomeEvents.signInBannerImpression())
     }
 
     fun onSignInClicked() {
-        tracker.track(HomeEvents.signInBannerButtonClicked())
         _events.tryEmit(Home.Event.GoToSignIn)
     }
 
@@ -358,32 +321,32 @@ class HomeViewModel @Inject constructor(
         val errorSnackBarRefreshing: Boolean = false,
         val errorSnackBarVisible: Boolean = false,
         val upgradeButtonVisible: Boolean = false,
-        val signInBannerVisible: Boolean = false,
+        val signInBannerVisible: Boolean = false
     )
 
     sealed class ScreenState(
         val slatesSkeletonVisible: Boolean = false,
         val slatesVisible: Boolean = false,
-        val topicsVisible: Boolean = true,
+        val topicsVisible: Boolean = true
     ) {
         object Loading : ScreenState(
-            slatesSkeletonVisible = true,
+            slatesSkeletonVisible = true
         )
 
         object Slates : ScreenState(
-            slatesVisible = true,
+            slatesVisible = true
         )
     }
 
     data class RecommendationSlateUiState(
         val title: String?,
         val subheadline: String?,
-        val recommendations: List<RecommendationUiState>,
+        val recommendations: List<RecommendationUiState>
     )
 
     private fun DomainSlate.toRecommendationSlateUiState(
         stringLoader: StringLoader,
-        recommendationsPerSlate: Int,
+        recommendationsPerSlate: Int
     ) = RecommendationSlateUiState(
         title = title,
         subheadline = subheadline,
@@ -395,7 +358,7 @@ class HomeViewModel @Inject constructor(
 
     data class TopicUiState(
         val title: String,
-        val topicId: String,
+        val topicId: String
     )
 
     companion object {

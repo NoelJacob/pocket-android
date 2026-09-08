@@ -16,11 +16,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.ideashower.readitlater.R
 import com.ideashower.readitlater.databinding.FragmentAuthenticationBinding
-import com.pocket.analytics.ImpressionComponent
-import com.pocket.analytics.ImpressionRequirement
-import com.pocket.analytics.ImpressionableInfoPageAdapter
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.UiEntityType
+
+
 import com.pocket.app.settings.account.DeletedAccountConfirmationSnackbar
 import com.pocket.sdk.Pocket
 import com.pocket.sdk.api.PocketServer
@@ -30,6 +27,7 @@ import com.pocket.sdk.build.AppVersion
 import com.pocket.sdk.dev.TeamTools
 import com.pocket.sdk.util.AbsPocketFragment
 import com.pocket.ui.view.info.InfoPage
+import com.pocket.ui.view.info.InfoPageAdapter
 import com.pocket.util.android.FormFactor
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.withCreationCallback
@@ -41,7 +39,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class AuthenticationFragment : AbsPocketFragment() {
 
-    @Inject lateinit var tracker: Tracker
     @Inject lateinit var pocketServer: PocketServer
     @Inject lateinit var appVersion: AppVersion
     @Inject lateinit var pocket: Pocket
@@ -127,7 +124,7 @@ class AuthenticationFragment : AbsPocketFragment() {
     private fun setupIntroPager() {
         binding.intro.bind().clear()
             .adapter(
-                ImpressionableInfoPageAdapter(
+                InfoPageAdapter(
                     requireContext(),
                     FormFactor.getWindowWidthPx(activity),
                     listOf(
@@ -150,8 +147,8 @@ class AuthenticationFragment : AbsPocketFragment() {
                 )
             )
             .header(R.drawable.pkt_onboarding_logo)
-        tracker.bindUiEntityType(binding.intro, UiEntityType.SCREEN)
-        tracker.bindUiEntityIdentifier(binding.intro, UiEntityIdentifier.LOGGED_OUT_HOME.value)
+
+
         trackScreenImpression(binding.intro)
     }
 
@@ -197,9 +194,7 @@ class AuthenticationFragment : AbsPocketFragment() {
     }
 
     private fun trackScreenImpression(view: View) {
-        tracker.trackImpression(view,
-            ImpressionComponent.SCREEN,
-            ImpressionRequirement.INSTANT)
+
     }
 
     companion object {

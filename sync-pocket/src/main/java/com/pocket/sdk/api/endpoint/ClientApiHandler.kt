@@ -8,7 +8,8 @@ import com.pocket.util.java.JsonUtil
 import org.apache.commons.lang3.RandomStringUtils
 import java.io.InputStream
 
-private const val CLIENT_API_ENDPOINT_URL = "https://api.getpocket.com/graphql" // During debugging/testing, "https://client-api.getpocket.com" may also be helpful, it skips the web repo proxy. However this should only be used for debugging and not production.
+// ponytail: local-backend PoC; production endpoint removed.
+private const val CLIENT_API_ENDPOINT_URL = "http://10.0.2.2:8080/graphql" // During debugging/testing, "https://client-api.getpocket.com" may also be helpful, it skips the web repo proxy. However this should only be used for debugging and not production.
 
 class ClientApiHandler(val httpClient: EclecticHttp) : GraphQlSource.HttpHandler {
 

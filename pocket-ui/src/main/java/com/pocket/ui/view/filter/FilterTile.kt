@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewOutlineProvider
-import com.pocket.analytics.api.UiEntityable
+
 import com.pocket.ui.R
 import com.pocket.ui.databinding.ViewFilterTileBinding
 import com.pocket.ui.util.DimenUtil
@@ -18,7 +18,6 @@ class FilterTile(
 ) : ThemedConstraintLayout2(
     context,
     attrs,
-    entityType = UiEntityable.Type.BUTTON,
 ) {
 
     private val binding: ViewFilterTileBinding = ViewFilterTileBinding.inflate(

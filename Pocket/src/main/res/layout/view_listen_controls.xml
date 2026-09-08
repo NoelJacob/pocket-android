@@ -25,8 +25,7 @@
         app:layout_constraintEnd_toStartOf="@+id/listen_skip_back"
         app:layout_constraintHorizontal_weight="3"
         app:layout_constraintStart_toEndOf="@+id/listen_controls_space_left"
-        app:layout_constraintTop_toTopOf="@+id/listen_play_pause"
-        app:uiEntityIdentifier="listen_speed_open" />
+        app:layout_constraintTop_toTopOf="@+id/listen_play_pause" />
     
     <com.pocket.ui.view.button.IconButton
         android:id="@+id/listen_skip_back"
@@ -37,8 +36,7 @@
         app:layout_constraintEnd_toStartOf="@+id/listen_play_pause"
         app:layout_constraintHorizontal_weight="3"
         app:layout_constraintStart_toEndOf="@+id/listen_speed"
-        app:layout_constraintTop_toTopOf="@+id/listen_play_pause"
-        app:uiEntityIdentifier="listen_skip_back" />
+        app:layout_constraintTop_toTopOf="@+id/listen_play_pause" />
     
     <com.pocket.ui.view.button.IconButton
         android:id="@+id/listen_prev"
@@ -70,8 +68,7 @@
         app:layout_constraintEnd_toStartOf="@+id/listen_archive"
         app:layout_constraintHorizontal_weight="3"
         app:layout_constraintStart_toEndOf="@+id/listen_play_pause"
-        app:layout_constraintTop_toTopOf="@+id/listen_play_pause"
-        app:uiEntityIdentifier="listen_skip_forward" />
+        app:layout_constraintTop_toTopOf="@+id/listen_play_pause" />
     
     <com.pocket.ui.view.button.IconButton
         android:id="@+id/listen_next"
@@ -82,7 +79,6 @@
         app:layout_constraintEnd_toEndOf="@+id/listen_skip"
         app:layout_constraintStart_toStartOf="@+id/listen_skip"
         app:layout_constraintTop_toTopOf="@+id/listen_skip"
-        app:uiEntityIdentifier="listen_next"
         />
     
     <com.pocket.ui.view.button.IconButton
@@ -94,8 +90,7 @@
         app:layout_constraintEnd_toStartOf="@+id/listen_controls_space_right"
         app:layout_constraintHorizontal_weight="3"
         app:layout_constraintStart_toEndOf="@+id/listen_skip"
-        app:layout_constraintTop_toTopOf="@+id/listen_play_pause"
-        app:uiEntityIdentifier="listen_archive" />
+        app:layout_constraintTop_toTopOf="@+id/listen_play_pause" />
     
     <Space
         android:id="@+id/listen_controls_space_right"

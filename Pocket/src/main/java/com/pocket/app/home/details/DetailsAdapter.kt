@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ideashower.readitlater.databinding.ViewHomeHeroCardBinding
-import com.pocket.analytics.ViewableImpressionScrollListener
 import com.pocket.sdk2.view.LazyAssetBitmap
 import com.pocket.ui.util.LazyBitmapDrawable
 import com.pocket.util.android.repeatOnCreated
@@ -16,7 +15,6 @@ import com.pocket.util.android.repeatOnCreated
 class DetailsAdapter(
     viewLifecycleOwner: LifecycleOwner,
     private val viewModel: DetailsViewModel,
-    private val impressionScrollListener: ViewableImpressionScrollListener,
 ): ListAdapter<RecommendationUiState,
         DetailsAdapter.ViewHolder>(DIFF_CALLBACK) {
 
@@ -82,7 +80,6 @@ class DetailsAdapter(
                         )
                         state.isSaved
                     }
-                saveLayout.uiEntityComponentDetail = state.title
                 root.setOnClickListener {
                     viewModel.onItemClicked(
                         url = state.url,
@@ -97,15 +94,8 @@ class DetailsAdapter(
                         corpusRecommendationId = state.corpusRecommendationId,
                     )
                 }
-                overflow.engageable.uiEntityComponentDetail = state.title
             }
 
-            impressionScrollListener.track(
-                view = binding.root,
-                identifier = state.url,
-            ) {
-                viewModel.onItemViewed(position, state.url, state.corpusRecommendationId)
-            }
         }
     }
 

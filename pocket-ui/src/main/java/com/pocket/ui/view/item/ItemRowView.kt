@@ -7,7 +7,6 @@ import com.pocket.ui.view.checkable.CheckableConstraintLayout
 import com.pocket.ui.view.visualmargin.VisualMargin
 import android.view.LayoutInflater
 import com.pocket.ui.R
-import com.pocket.analytics.api.UiEntityable
 import com.pocket.ui.databinding.ViewItemRowBinding
 import com.pocket.ui.util.LazyBitmap
 import com.pocket.ui.util.LazyBitmapDrawable
@@ -34,8 +33,6 @@ class ItemRowView : CheckableConstraintLayout, VisualMargin {
     init {
         bind().clear()
         setBackgroundResource(R.drawable.cl_pkt_touchable_area)
-        engageable.uiEntityType = UiEntityable.Type.CARD
-        engageable.uiEntityComponentDetail = "item_row"
     }
 
     fun bind(): Binder {

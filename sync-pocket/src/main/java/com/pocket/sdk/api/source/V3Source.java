@@ -239,7 +239,8 @@ import java.util.Map;
 public class V3Source implements SynchronousSource, FullResultSource, LimitedSource {
 
 	public static JsonConfig JSON_CONFIG = new JsonConfig(PocketRemoteStyle.V3, true);
-	public static final String PRODUCTION_SERVER = "https://api.getpocket.com";
+	// ponytail: local-backend PoC; production endpoint removed.
+	public static final String PRODUCTION_SERVER = "http://10.0.2.2:8080";
 	public static final int MAX_ACTIONS_DEFAULT = 30;
 
 	private final EclecticHttp httpClient;

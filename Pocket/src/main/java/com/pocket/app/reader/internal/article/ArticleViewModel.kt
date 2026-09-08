@@ -4,9 +4,6 @@ import android.os.Build
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pocket.analytics.ContentOpenTracker
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.ArticleViewEvents
 import com.pocket.app.premium.PremiumFonts
 import com.pocket.app.reader.internal.article.DisplaySettingsManager.OnDisplaySettingsChangedListener
 import com.pocket.app.reader.internal.article.javascript.JavascriptFunctions
@@ -47,9 +44,7 @@ class ArticleViewModel @Inject constructor(
     private val pocketCache: PocketCache,
     private val highlightRepository: HighlightRepository,
     private val displaySettingsManager: DisplaySettingsManager,
-    private val premiumFonts: PremiumFonts,
-    private val tracker: Tracker,
-    private val contentOpenTracker: ContentOpenTracker,
+    private val premiumFonts: PremiumFonts
 ) : ViewModel(),
     ArticleScreen.Initializer,
     ArticleScreen.ErrorInteractions,
@@ -228,7 +223,7 @@ class ArticleViewModel @Inject constructor(
             highlightRepository.addHighlight(
                 patch = patch,
                 text = text,
-                itemUrl = url,
+                itemUrl = url
             )
             applyHighlights()
         }
@@ -292,7 +287,6 @@ class ArticleViewModel @Inject constructor(
         itemRepository = itemRepository,
         save = save,
         coroutineScope = viewModelScope,
-        tracker = tracker,
     ) {
 
         fun setupToolbar(url: String) {
@@ -416,19 +410,18 @@ class ArticleViewModel @Inject constructor(
     }
 
     override fun onArticleLinkOpened(url: String) {
-        contentOpenTracker.track(ArticleViewEvents.articleLinkContentOpen(url))
     }
 
     override fun onBrightnessChanged(brightness: Float) = Unit
 
     data class UiState(
-        val screenState: ScreenState = ScreenState.Loading,
+        val screenState: ScreenState = ScreenState.Loading
     )
 
     sealed class ScreenState(
         val loadingVisible: Boolean = false,
         val mainLayoutVisible: Boolean = true, // always visible or bad things happen
-        val errorVisible: Boolean = false,
+        val errorVisible: Boolean = false
     ) {
         object Loading : ScreenState(
             loadingVisible = true
@@ -447,7 +440,7 @@ class ArticleViewModel @Inject constructor(
         actionButtonState = actionButtonState,
         listenVisible = true,
         shareVisible = true,
-        overflowVisible = true,
+        overflowVisible = true
     )
 
     private fun UnsavedSyndicatedArticleToolbarState() = ReaderToolbar.ToolbarUiState(
@@ -456,11 +449,11 @@ class ArticleViewModel @Inject constructor(
         actionButtonState = ReaderToolbar.ActionButtonState.Save(),
         listenVisible = true,
         shareVisible = true,
-        overflowVisible = true,
+        overflowVisible = true
     )
 
     private fun ArticleOverflowState(
-        isFavorited: Boolean,
+        isFavorited: Boolean
     ) = ReaderToolbar.ToolbarOverflowUiState(
         textSettingsVisible = true,
         viewOriginalVisible = true,
@@ -472,11 +465,11 @@ class ArticleViewModel @Inject constructor(
         highlightsVisible = true,
         markAsNotViewedVisible = true,
         deleteVisible = true,
-        reportArticleVisible = true,
+        reportArticleVisible = true
     )
 
     private fun SyndicatedArticleOverflowState(
-        isFavorited: Boolean,
+        isFavorited: Boolean
     ) = ReaderToolbar.ToolbarOverflowUiState(
         textSettingsVisible = true,
         refreshVisible = true,
@@ -487,13 +480,13 @@ class ArticleViewModel @Inject constructor(
         highlightsVisible = true,
         markAsNotViewedVisible = true,
         deleteVisible = true,
-        reportArticleVisible = true,
+        reportArticleVisible = true
     )
 
     private fun UnsavedSyndicatedArticleOverflowState() = ReaderToolbar.ToolbarOverflowUiState(
         textSettingsVisible = true,
         refreshVisible = true,
         findInPageVisible = true,
-        reportArticleVisible = true,
+        reportArticleVisible = true
     )
 }

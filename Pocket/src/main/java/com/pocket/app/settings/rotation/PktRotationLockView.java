@@ -100,8 +100,7 @@ public class PktRotationLockView extends FrameLayout implements RotationLockView
         toggle.clearAnimation();
         setVisibility(View.VISIBLE);
         toggle.setEnabled(true);
-        toggle.setOnCheckedChangeListener((view, isChecked) ->
-                toggle.setUiEntityIdentifier(isChecked ? UiEntityIdentifier.ROTATION_LOCK.value : UiEntityIdentifier.ROTATION_UNLOCK.value));
+        toggle.setOnCheckedChangeListener((view, isChecked) -> {});
         toggle.setChecked(checked);
         toggle.setVisibility(View.VISIBLE);
         scheduleFadeOut(LOCK_SHOW_DURATION_MS);

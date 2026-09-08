@@ -118,7 +118,8 @@ public class PocketCache implements AppLifecycle {
 	}
 	
 	public synchronized boolean hasPremium() {
-		return Safe.getBoolean(() -> cached().account.premium_status);
+		// ponytail: premium forced unlocked for local builds
+		return true;
 	}
 	
 	public synchronized PremiumAllTimeStatus premium_alltime_status() {
@@ -168,7 +169,8 @@ public class PocketCache implements AppLifecycle {
 	}
 	
 	public synchronized boolean hasFeature(PremiumFeature feature) {
-		return Safe.getBoolean(() -> cached().account.premium_features.contains(feature));
+		// ponytail: premium forced unlocked for local builds
+		return true;
 	}
 	
 	public synchronized String getUID() {
@@ -180,6 +182,7 @@ public class PocketCache implements AppLifecycle {
 	}
 
 	public synchronized boolean isPremiumUpgradeAvailable () {
-		return UserRepositoryKt.isPremiumUpgradeAvailable(cached());
+		// ponytail: premium forced unlocked for local builds
+		return false;
 	}
 }

@@ -54,6 +54,8 @@
 	<string name="ac_continue_editing">Continue Editing</string>
 	<string name="ac_add_new_tag">add new tag <b>\‘{name_of_tag}\‘</b></string>
 	<string name="ac_undo">UNDO</string>
+	<string name="ic_highlight" comment="Label for button that highlights selected text">Highlight</string>
+	<string name="ic_copy">Copy</string>
 	<string name="ac_highlight" comment="Label for button that highlights selected text">@string/ic_highlight</string>
 	<string name="ac_copy">@string/ic_copy</string>
 	<string name="ac_translate">Translate</string>

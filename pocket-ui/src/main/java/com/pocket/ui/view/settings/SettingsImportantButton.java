@@ -36,7 +36,7 @@ public class SettingsImportantButton extends ThemedConstraintLayout {
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.view_settings_important, this, true);
         text = findViewById(R.id.text);
-        engageable.setUiEntityType(Type.BUTTON);
+
     }
 
     public Binder bind() {

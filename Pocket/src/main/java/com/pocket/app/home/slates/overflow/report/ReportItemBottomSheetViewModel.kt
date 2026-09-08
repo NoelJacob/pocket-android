@@ -1,9 +1,6 @@
 package com.pocket.app.home.slates.overflow.report
 
 import androidx.lifecycle.ViewModel
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.ReportBottomSheetEvents
-import com.pocket.analytics.entities.ReportEntity
 import com.pocket.util.edit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -14,7 +11,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ReportItemBottomSheetViewModel @Inject constructor(
-    private val tracker: Tracker,
 ): ViewModel(), ReportItemInteractions {
 
     private val _uiState = MutableStateFlow(UiState())
@@ -85,22 +81,12 @@ class ReportItemBottomSheetViewModel @Inject constructor(
     }
 
     override fun onSubmitClicked() {
-        tracker.track(ReportBottomSheetEvents.reportClicked(
-            url,
-            uiState.value.reportReason.value,
-            if (uiState.value.reportReason is ReportReason.Other) {
-                otherText
-            } else {
-                null
-            },
-            corpusRecommendationId,
-        ))
         _events.tryEmit(Event.ShowToastAndClose)
     }
 
     data class UiState(
         val submitButtonEnabled: Boolean = false,
-        val reportReason: ReportReason = ReportReason.None,
+        val reportReason: ReportReason = ReportReason.None
     )
 
     sealed class ReportReason(
@@ -111,39 +97,32 @@ class ReportItemBottomSheetViewModel @Inject constructor(
         val misinformationSelected: Boolean = false,
         val otherSelected: Boolean = false,
         val otherTextBoxVisible: Boolean = false,
-        val value: ReportEntity.Reason = ReportEntity.Reason.BROKEN_META,
     ) {
         object None: ReportReason()
 
         class Broken: ReportReason(
             brokenSelected = true,
-            value = ReportEntity.Reason.BROKEN_META,
         )
 
         class WrongCategory: ReportReason(
             wrongCategorySelected = true,
-            value = ReportEntity.Reason.WRONG_CATEGORY,
         )
 
         class SexuallyExplicit: ReportReason(
             sexuallyExplicitSelected = true,
-            value = ReportEntity.Reason.SEXUALLY_EXPLICIT,
         )
 
         class Offensive: ReportReason(
             offensiveSelected = true,
-            value = ReportEntity.Reason.OFFENSIVE,
         )
 
         class Misinformation: ReportReason(
             misinformationSelected = true,
-            value = ReportEntity.Reason.MISINFORMATION,
         )
 
         class Other: ReportReason(
             otherSelected = true,
             otherTextBoxVisible = true,
-            value = ReportEntity.Reason.OTHER
         )
     }
 

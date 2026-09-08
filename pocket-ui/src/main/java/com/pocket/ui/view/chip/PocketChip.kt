@@ -7,7 +7,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.updatePadding
 import androidx.databinding.BindingAdapter
-import com.pocket.analytics.api.UiEntityable
 import com.pocket.ui.R
 import com.pocket.ui.databinding.ViewChipBinding
 import com.pocket.ui.util.toPxInt
@@ -20,7 +19,6 @@ class PocketChip(
 ) : ThemedLinearLayout(
     context,
     attrs,
-    entityType = UiEntityable.Type.BUTTON,
 ) {
 
     private val binding: ViewChipBinding = ViewChipBinding.inflate(

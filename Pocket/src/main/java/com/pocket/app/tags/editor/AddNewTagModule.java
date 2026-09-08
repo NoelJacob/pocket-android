@@ -12,7 +12,6 @@ import com.pocket.app.tags.ItemsTaggingFragment;
 import com.squareup.phrase.Phrase;
 
 
-
 /**
  * A module that controls the <code>add new tag "xyz"</code> option that appears at the top
  * of an autocomplete list.

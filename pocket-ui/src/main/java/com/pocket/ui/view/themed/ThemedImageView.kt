@@ -2,8 +2,6 @@ package com.pocket.ui.view.themed
 
 import android.content.Context
 import androidx.appcompat.widget.AppCompatImageView
-import com.pocket.analytics.api.Engageable
-import com.pocket.analytics.api.EngageableHelper
 import android.content.res.ColorStateList
 import android.graphics.Color
 import com.pocket.ui.R
@@ -14,16 +12,13 @@ import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.databinding.BindingAdapter
-import com.pocket.analytics.api.EngagementListener
-import com.pocket.analytics.api.UiEntityable
 
 open class ThemedImageView
 @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0,
-    val engageable: EngageableHelper = EngageableHelper(), // TODO: This should be private
-): AppCompatImageView(context, attrs, defStyleAttr), Engageable by engageable {
+    defStyleAttr: Int = 0
+): AppCompatImageView(context, attrs, defStyleAttr) {
     private var mColors: ColorStateList? = null
     private var mHeightRatio = 0f
     private var mDrawableColorOverride: ColorOverride? = null
@@ -41,13 +36,11 @@ open class ThemedImageView
             }
             mHeightRatio = a.getFloat(R.styleable.ThemedImageView_heightRatio, 0f)
             a.recycle()
-            engageable.obtainStyledAttributes(context, attrs)
             if (mColors != null && drawable is BitmapDrawable) {
                 // Recreate the drawable with the new colors
                 setImageDrawable(drawable)
             }
         }
-        engageable.uiEntityType = UiEntityable.Type.BUTTON
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -115,23 +108,10 @@ open class ThemedImageView
         }
     }
 
-    override var uiEntityIdentifier: String?
-        get() = engageable.uiEntityIdentifier
-        set(uiEntityIdentifier) {
-            engageable.uiEntityIdentifier = uiEntityIdentifier
-        }
-    override var uiEntityLabel: String?
-        get() = engageable.uiEntityLabel
-        set(label) {
-            engageable.uiEntityLabel = label
-        }
 
-    override fun setEngagementListener(listener: EngagementListener?) {
-        engageable.setEngagementListener(listener)
-    }
 
     override fun setOnClickListener(listener: OnClickListener?) {
-        super.setOnClickListener(engageable.getWrappedClickListener(listener))
+        super.setOnClickListener(listener)
     }
 
     interface ColorOverride {

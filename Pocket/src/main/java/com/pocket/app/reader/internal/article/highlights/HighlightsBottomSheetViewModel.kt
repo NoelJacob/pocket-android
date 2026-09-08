@@ -2,8 +2,6 @@ package com.pocket.app.reader.internal.article.highlights
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.ArticleViewEvents
 import com.pocket.repository.HighlightRepository
 import com.pocket.util.edit
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,8 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HighlightsBottomSheetViewModel @Inject constructor(
-    private val highlightRepository: HighlightRepository,
-    private val tracker: Tracker,
+    private val highlightRepository: HighlightRepository
 ) : ViewModel(),
     HighlightsBottomSheet.Initializer,
     HighlightsBottomSheet.HighlightInteractions {
@@ -48,7 +45,7 @@ class HighlightsBottomSheetViewModel @Inject constructor(
                     }.map {
                         HighlightUiState(
                             id = it.id,
-                            text = it.quote,
+                            text = it.quote
                         )
                     }
                 }
@@ -61,7 +58,6 @@ class HighlightsBottomSheetViewModel @Inject constructor(
     }
 
     override fun onShareClicked(text: String) {
-        tracker.track(ArticleViewEvents.highlightShareClicked(url))
         _events.tryEmit(HighlightsBottomSheet.Event.ShowShare(text))
     }
 
@@ -79,6 +75,6 @@ class HighlightsBottomSheetViewModel @Inject constructor(
 
     data class HighlightUiState(
         val id: String,
-        val text: String,
+        val text: String
     )
 }

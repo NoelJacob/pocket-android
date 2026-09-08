@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:uiEntityIdentifier="item"
     >
     
     <View
@@ -173,7 +172,6 @@
                     android:paddingTop="15dp"
                     android:paddingBottom="15dp"
                     android:scaleType="fitCenter"
-                    app:uiEntityIdentifier="itemFavorite"
                     />
                 <com.pocket.ui.view.button.IconButton
                     android:id="@+id/share"
@@ -194,7 +192,6 @@
                     android:paddingEnd="20dp"
                     android:paddingBottom="15dp"
                     android:scaleType="fitCenter"
-                    app:uiEntityIdentifier="itemOverflow"
                     />
             </com.pocket.ui.view.themed.ThemedLinearLayout>
     

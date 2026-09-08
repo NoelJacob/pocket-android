@@ -181,7 +181,6 @@ public class AppBar extends ThemedConstraintLayout {
             leftIcon.setVisibility(View.VISIBLE);
             leftIcon.setImageResource(drawable);
             leftIcon.setContentDescription(getResources().getString(contentDescription));
-            leftIcon.setUiEntityIdentifier(uiEntityIdentifier);
             return this;
         }
 

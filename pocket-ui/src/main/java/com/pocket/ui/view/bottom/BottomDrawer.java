@@ -15,8 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.pocket.analytics.api.UiEntityable;
-import com.pocket.analytics.api.UiEntityableHelper;
 import com.pocket.ui.R;
 import com.pocket.ui.util.PocketUIViewUtil;
 import com.pocket.util.android.AccessibilityUtils;
@@ -43,7 +41,7 @@ import java.util.Set;
  * If you need it inflated before then, use {@link #inflate(int)}. Subclasses can override and use {@link #onLazyInflated()}
  * to do their setup.
  */
-public class BottomDrawer extends CoordinatorLayout implements UiEntityable {
+public class BottomDrawer extends CoordinatorLayout {
 	
 	private final Set<BottomSheetBehavior.BottomSheetCallback> callbacks = new HashSet<>();
 	
@@ -61,7 +59,6 @@ public class BottomDrawer extends CoordinatorLayout implements UiEntityable {
 	private float scrimAlphaWhenCollapsed = 0;
 	private float scrimAlphaWhenExpanded = 0;
 
-	protected final UiEntityableHelper uiEntityable = new UiEntityableHelper();
 
 	public BottomDrawer(Context context) {
 		super(context);
@@ -80,8 +77,6 @@ public class BottomDrawer extends CoordinatorLayout implements UiEntityable {
 	
 	private void init(AttributeSet attrs) {
 		if (attrs != null) {
-			uiEntityable.obtainStyledAttributes(getContext(), attrs);
-
 			TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.BottomDrawer);
 			int layout = a.getResourceId(R.styleable.BottomDrawer_sheetLayout, 0);
 			if (layout != 0) {
@@ -89,7 +84,6 @@ public class BottomDrawer extends CoordinatorLayout implements UiEntityable {
 			}
 			a.recycle();
 			// TODO support behavior_hideable, behavior_peekHeight and other bottom sheet attrs directly on this view
-			// TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.BottomSheetBehavior_Layout);
 		}
 	}
 
@@ -268,29 +262,11 @@ public class BottomDrawer extends CoordinatorLayout implements UiEntityable {
 		return true;
 	}
 
-	@Nullable @Override public String getUiEntityIdentifier() {
-		return uiEntityable.getUiEntityIdentifier();
-	}
 	
-	@Override public void setUiEntityIdentifier(@Nullable String uiEntityIdentifier) {
-		uiEntityable.setUiEntityIdentifier(uiEntityIdentifier);
-	}
 	
-	@Nullable @Override public Type getUiEntityType() {
-		return uiEntityable.getUiEntityType();
-	}
 	
-	@Nullable @Override public String getUiEntityComponentDetail() {
-		return uiEntityable.getUiEntityComponentDetail();
-	}
 	
-	@Override public void setUiEntityComponentDetail(@Nullable String value) {
-		uiEntityable.setUiEntityComponentDetail(value);
-	}
 	
-	@Nullable @Override public String getUiEntityLabel() {
-		return uiEntityable.getUiEntityLabel();
-	}
 
 	private class BottomSheetCallback extends BottomSheetBehavior.BottomSheetCallback {
 

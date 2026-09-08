@@ -14,8 +14,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ideashower.readitlater.R
 import com.ideashower.readitlater.databinding.FragMyListBinding
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.ViewableImpressionScrollListener
 import com.pocket.app.auth.AuthenticationActivity
 import com.pocket.app.auth.FxaFeature
 import com.pocket.app.help.Help
@@ -57,7 +55,6 @@ import javax.inject.Inject
 class MyListFragment : AbsPocketFragment() {
 
     @Inject lateinit var listen: Listen
-    @Inject lateinit var tracker: Tracker
     @Inject lateinit var fxaFeature: FxaFeature
     @Inject lateinit var pocket: Pocket
     @Inject lateinit var bulkEditListItemAnimator: BulkEditListItemAnimator
@@ -231,12 +228,6 @@ class MyListFragment : AbsPocketFragment() {
                     binding.searchEditText.setText(event.searchText)
                     binding.searchEditText.setSelection(event.searchText.length)
                 }
-                is MyListNavigationEvent.TrackSearchAnalytics -> {
-                    tracker.trackEngagement(
-                        binding.searchEditText,
-                        value = event.searchText,
-                    )
-                }
             }
         }
     }
@@ -271,23 +262,19 @@ class MyListFragment : AbsPocketFragment() {
     }
 
     private fun setupListView() {
-        val saveImpressionScrollListener = ViewableImpressionScrollListener(viewLifecycleOwner)
         val myListAdapter = MyListAdapter(
             viewLifecycleOwner = viewLifecycleOwner,
-            tracker = tracker,
             context = requireContext(),
             viewModel = viewModel,
             bulkEditListItemAnimator = bulkEditListItemAnimator,
             theme = theme,
             recyclerView = binding.listRecyclerView,
-            saveImpressionScrollListener = saveImpressionScrollListener,
         )
         binding.listRecyclerView.apply {
             addOnScrollListener(MyListPagingScrollListener(
                 myListAdapter,
                 viewModel
             ))
-            addOnScrollListener(saveImpressionScrollListener)
             adapter = myListAdapter
         }
     }

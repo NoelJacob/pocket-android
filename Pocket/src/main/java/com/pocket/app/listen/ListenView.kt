@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.ideashower.readitlater.R
 import com.ideashower.readitlater.databinding.ViewListenBinding
-import com.pocket.analytics.ItemContent
+
 import com.pocket.app.App
 import com.pocket.app.PocketApp
 import com.pocket.sdk.api.generated.enums.CxtSection
@@ -167,12 +167,10 @@ class ListenView @JvmOverloads constructor(context: Context?, attrs: AttributeSe
         if (state.playstate == PlayState.PLAYING || state.playstate == PlayState.BUFFERING) {
             views.listenMiniPlayPause.setImageResource(com.pocket.ui.R.drawable.ic_pkt_pause_mini)
             views.listenMiniPlayPause.contentDescription = resources.getString(com.pocket.ui.R.string.ic_pause)
-            views.listenMiniPlayPause.uiEntityIdentifier =
                 UiEntityIdentifier.LISTEN_MINI_PAUSE.value
         } else {
             views.listenMiniPlayPause.setImageResource(com.pocket.ui.R.drawable.ic_pkt_play_mini)
             views.listenMiniPlayPause.contentDescription = resources.getString(com.pocket.ui.R.string.ic_play)
-            views.listenMiniPlayPause.uiEntityIdentifier = UiEntityIdentifier.LISTEN_MINI_PLAY.value
         }
         val maxProgress = resources.getInteger(R.integer.listen_max_progress)
         if (state.duration.seconds == 0L) {
@@ -197,7 +195,6 @@ class ListenView @JvmOverloads constructor(context: Context?, attrs: AttributeSe
                     displayAuthors(authors)
                 )
             }
-            app.tracker().bindContent(this, ItemContent(idUrl))
         }
         views.listenStickyControls.bind(state, controls, shouldShowDegradedPlayer(state))
         playlistAdapter.bind(state, controls, shouldShowDegradedPlayer(state))

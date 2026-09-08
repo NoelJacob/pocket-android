@@ -1,8 +1,6 @@
 package com.pocket.app.home.slates.overflow
 
 import androidx.lifecycle.ViewModel
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.RecommendationBottomSheetEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -10,7 +8,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecommendationOverflowBottomSheetViewModel @Inject constructor(
-    private val tracker: Tracker,
 ): ViewModel(), RecommendationOverflowInteractions {
 
     private val _events = MutableSharedFlow<Event>(extraBufferCapacity = 1)
@@ -27,20 +24,10 @@ class RecommendationOverflowBottomSheetViewModel @Inject constructor(
     }
 
     override fun onReportThisItemClicked() {
-        tracker.track(RecommendationBottomSheetEvents.reportClicked(
-            url = url,
-            itemTitle = title,
-            corpusRecommendationId = corpusRecommendationId
-        ))
         _events.tryEmit(Event.ShowReport)
     }
 
     override fun onShareClicked() {
-        tracker.track(RecommendationBottomSheetEvents.shareClicked(
-            url = url,
-            itemTitle = title,
-            corpusRecommendationId = corpusRecommendationId
-        ))
         _events.tryEmit(Event.ShowShare)
     }
 

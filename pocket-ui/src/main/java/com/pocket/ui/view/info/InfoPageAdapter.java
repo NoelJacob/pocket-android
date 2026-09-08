@@ -12,7 +12,6 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.pocket.analytics.api.UiEntityable;
 import com.pocket.ui.R;
 import com.pocket.ui.text.Fonts;
 import com.pocket.ui.text.TextViewUtil;
@@ -101,12 +100,9 @@ public class InfoPageAdapter extends InfoPagingView.InfoAdapter {
             this.root = root;
         }
 
-        public void setUiEntityIdentifier(String identifier) {
-            root.setUiEntityIdentifier(identifier);
-        }
     }
 
-    private class InfoWrap extends FrameLayout implements UiEntityable {
+    private class InfoWrap extends FrameLayout {
 
         private String uiEntityIdentifier = "info_pager";
         private String uiEntityComponentDetail = "info_page";
@@ -114,29 +110,11 @@ public class InfoPageAdapter extends InfoPagingView.InfoAdapter {
         public InfoWrap(@NonNull Context context) { super(context); }
         public InfoWrap(@NonNull Context context, @androidx.annotation.Nullable AttributeSet attrs) { super(context, attrs); }
         public InfoWrap(@NonNull Context context, @androidx.annotation.Nullable AttributeSet attrs, int defStyleAttr) { super(context, attrs, defStyleAttr); }
-        @Nullable @Override public String getUiEntityIdentifier() {
-            return uiEntityIdentifier;
-        }
 
-        @Override public void setUiEntityIdentifier(@Nullable String uiEntityIdentifier) {
-            this.uiEntityIdentifier = uiEntityIdentifier;
-        }
     
-        @Nullable @Override public Type getUiEntityType() {
-            return Type.PAGE;
-        }
 
-        @Nullable @Override public String getUiEntityComponentDetail() {
-            return uiEntityComponentDetail;
-        }
 
-        @Override public void setUiEntityComponentDetail(@Nullable String value) {
-            uiEntityComponentDetail = value;
-        }
 
-        @Nullable @Override public String getUiEntityLabel() {
-            return null;
-        }
     }
 
     @Override
@@ -164,9 +142,6 @@ public class InfoPageAdapter extends InfoPagingView.InfoAdapter {
                 .image(page.getImageResId())
                 .title(page.getTitle())
                 .text(page.getText());
-        if (page.getUiEntityIdentifier() != null) {
-            ((InfoViewHolder) holder).setUiEntityIdentifier(page.getUiEntityIdentifier());
-        }
     }
 
     @Override

@@ -23,8 +23,7 @@ public final class CoverflowItemView extends ThemedConstraintLayout {
 		cover = findViewById(R.id.coverflow_item);
 		disableAutoHiding();
 
-		engageable.setUiEntityType(Type.CARD);
-		engageable.setUiEntityComponentDetail("item_cover");
+
 	}
 	
 	private void disableAutoHiding() {

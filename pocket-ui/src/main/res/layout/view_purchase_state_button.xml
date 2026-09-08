@@ -14,8 +14,7 @@
         android:layout_marginRight="5dp"
         android:layout_marginEnd="5dp"
         app:layout_goneMarginRight="0dp"
-        app:layout_goneMarginEnd="0dp"
-        app:uiEntityIdentifier="join_pocket_premium" />
+        app:layout_goneMarginEnd="0dp" />
 
     <com.pocket.ui.view.button.PurchaseButton
         android:id="@+id/option_2"
@@ -27,8 +26,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
         app:layout_goneMarginLeft="0dp"
-        app:layout_goneMarginStart="0dp"
-        app:uiEntityIdentifier="join_pocket_premium" />
+        app:layout_goneMarginStart="0dp" />
 
     <com.pocket.ui.view.button.ErrorButton
         android:id="@+id/option_unknown"
@@ -38,8 +36,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:uiEntityIdentifier="premium_purchase_option_unknown" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.pocket.ui.view.themed.ThemedTextView
         android:id="@+id/badge"

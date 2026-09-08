@@ -52,7 +52,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="@{() -> viewModel.onFavoriteClicked()}"
-        app:uiEntityIdentifier="bulkEditFavorite"
         >
     
         <com.pocket.ui.view.themed.ThemedImageView
@@ -91,7 +90,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="@{() -> viewModel.onEditTagsClicked()}"
-        app:uiEntityIdentifier="bulkEditAddTags"
         >
         
         <com.pocket.ui.view.themed.ThemedImageView
@@ -129,7 +127,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="@{() -> viewModel.onMarkAsViewedClicked()}"
-        app:uiEntityIdentifier="bulkEditMarkAsViewed"
         >
         
         <com.pocket.ui.view.themed.ThemedImageView
@@ -168,7 +165,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="@{() -> viewModel.onMarkAsNotViewedClicked()}"
-        app:uiEntityIdentifier="bulkEditMarkAsNotViewed"
         >
     
         <com.pocket.ui.view.themed.ThemedImageView

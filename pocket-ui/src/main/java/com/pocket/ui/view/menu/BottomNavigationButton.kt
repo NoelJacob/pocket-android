@@ -7,7 +7,6 @@ import android.view.View
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
-import com.pocket.analytics.api.UiEntityable
 import com.pocket.ui.R
 import com.pocket.ui.databinding.ViewBottomNavigationButtonBinding
 import com.pocket.ui.text.Fonts
@@ -25,7 +24,6 @@ class BottomNavigationButton(
 ) : ThemedConstraintLayout2(
     context = context,
     attrs = attrs,
-    entityType = UiEntityable.Type.BUTTON
 ), CheckableHelper.Checkable  {
 
     private val checkable = CheckableHelper(this).apply {

@@ -5,14 +5,10 @@ import android.util.AttributeSet;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.pocket.analytics.api.Engageable;
-import com.pocket.analytics.api.EngageableHelper;
-import com.pocket.analytics.api.EngagementListener;
 
 import org.jetbrains.annotations.Nullable;
 
-public class ThemedConstraintLayout extends ConstraintLayout implements Engageable {
-	protected final EngageableHelper engageable = new EngageableHelper();
+public class ThemedConstraintLayout extends ConstraintLayout {
 
 	public ThemedConstraintLayout(Context context) {
 		this(context, null);
@@ -24,7 +20,6 @@ public class ThemedConstraintLayout extends ConstraintLayout implements Engageab
 
 	public ThemedConstraintLayout(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
-		engageable.obtainStyledAttributes(context, attrs);
 	}
 	
 	@Override
@@ -34,39 +29,15 @@ public class ThemedConstraintLayout extends ConstraintLayout implements Engageab
 		return state;
 	}
 
-	@Nullable @Override public String getUiEntityIdentifier() {
-		return engageable.getUiEntityIdentifier();
-	}
 	
-	@Override public void setUiEntityIdentifier(@Nullable String uiEntityIdentifier) {
-		engageable.setUiEntityIdentifier(uiEntityIdentifier);
-	}
 	
-	@Nullable @Override public Type getUiEntityType() {
-		return engageable.getUiEntityType();
-	}
 	
-	@Nullable @Override public String getUiEntityComponentDetail() {
-		return engageable.getUiEntityComponentDetail();
-	}
 
-	@Nullable @Override public String getUiEntityLabel() {
-		return engageable.getUiEntityLabel();
-	}
 	
-	@Override public void setEngagementListener(@Nullable EngagementListener listener) {
-		engageable.setEngagementListener(listener);
-	}
 	
 	@Override public void setOnClickListener(@Nullable OnClickListener l) {
-		super.setOnClickListener(engageable.getWrappedClickListener(l));
+		super.setOnClickListener(l);
 	}
 
-	public void setUiEntityComponentDetail(String detail) {
-		engageable.setUiEntityComponentDetail(detail);
-	}
 
-	public void setUiEntityType(Type type) {
-		engageable.setUiEntityType(type);
-	}
 }

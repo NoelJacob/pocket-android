@@ -2,8 +2,6 @@ package com.pocket.app.reader
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.ReaderEvents
 import com.pocket.app.list.list.ListManager
 import com.pocket.app.reader.queue.*
 import com.pocket.repository.ItemRepository
@@ -22,8 +20,7 @@ class ReaderViewModel @Inject constructor(
     private val itemRepository: ItemRepository,
     private val reader: Reader,
     private val listManager: ListManager,
-    private val tracker: Tracker,
-    private val destinationHelper: DestinationHelper,
+    private val destinationHelper: DestinationHelper
 ) : ViewModel(),
     Reader.PreviousNextInteractions,
     Reader.Initializer,
@@ -49,7 +46,7 @@ class ReaderViewModel @Inject constructor(
     override fun onInitialized(
         url: String,
         initialQueueType: InitialQueueType,
-        queueStartingIndex: Int,
+        queueStartingIndex: Int
     ) {
         openUrl(
             url = url,
@@ -57,7 +54,7 @@ class ReaderViewModel @Inject constructor(
                 InitialQueueType.SavesList -> {
                     SavesListQueueManager(
                         listManager,
-                        queueStartingIndex,
+                        queueStartingIndex
                     )
                 }
                 InitialQueueType.Empty -> {
@@ -69,14 +66,12 @@ class ReaderViewModel @Inject constructor(
 
     override fun onPreviousClicked() {
         queueManagerStack.peek()?.getPreviousUrl()?.let { url ->
-            tracker.track(ReaderEvents.previousClicked(url))
             openUrl(url)
         }
     }
 
     override fun onNextClicked() {
         queueManagerStack.peek()?.getNextUrl()?.let { url ->
-            tracker.track(ReaderEvents.nextClicked(url))
             openUrl(url)
         }
     }
@@ -106,12 +101,12 @@ class ReaderViewModel @Inject constructor(
     fun openUrl(
         url: String,
         queueManager: QueueManager? = null,
-        forceOpenInWebView: Boolean = false,
+        forceOpenInWebView: Boolean = false
     ) {
         viewModelScope.launch {
             val destination = destinationHelper.getDestination(
                 url = url,
-                forceOpenInWebView = forceOpenInWebView,
+                forceOpenInWebView = forceOpenInWebView
             )
 
             when (destination) {
@@ -131,6 +126,6 @@ class ReaderViewModel @Inject constructor(
     data class UiState(
         val previousAndNextBarVisible: Boolean = false,
         val previousVisible: Boolean = true,
-        val nextVisible: Boolean = true,
+        val nextVisible: Boolean = true
     )
 }

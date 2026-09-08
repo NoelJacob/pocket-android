@@ -161,7 +161,6 @@ android {
         getByName(BuildTypes.DEBUG) {
             isMinifyEnabled = false
             isDebuggable = true
-            signingConfig = signingConfigs.getByName(SigningConfigs.TEAM)
             matchingFallbacks.add("release")
         }
 
@@ -169,7 +168,6 @@ android {
             isMinifyEnabled = true
             isDebuggable = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.txt")
-            signingConfig = signingConfigs.getByName(SigningConfigs.TEAM)
             matchingFallbacks.add("release")
         }
 
@@ -258,7 +256,7 @@ licensee {
 
 dependencies {
     implementation(projects.syncPocketAndroid)
-    implementation(projects.analytics)
+    // ponytail: analytics removed
     implementation(projects.pocketUi)
 
     implementation(libs.androidx.activity)

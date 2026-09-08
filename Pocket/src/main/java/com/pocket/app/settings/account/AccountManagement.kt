@@ -19,8 +19,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ideashower.readitlater.R
 import com.ideashower.readitlater.databinding.ActivityDeleteAccountBinding
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.SettingsEvents
 import com.pocket.app.App
 import com.pocket.app.UserManager
 import com.pocket.app.settings.AbsPrefsFragment
@@ -103,11 +101,9 @@ class AccountManagementFragment : AbsPrefsFragment() {
         }
     }
 
-    @Inject lateinit var tracker: Tracker
 
     override fun onViewCreatedImpl(view: View, savedInstanceState: Bundle?) {
         super.onViewCreatedImpl(view, savedInstanceState)
-        tracker.track(SettingsEvents.accountManagementImpression())
     }
 
     override fun getTitle(): Int = R.string.setting_account_management
@@ -117,7 +113,6 @@ class AccountManagementFragment : AbsPrefsFragment() {
         prefs.add(
             PreferenceViews.newActionBuilder(this, R.string.setting_delete_account)
                 .setOnClickListener {
-                    tracker.track(SettingsEvents.deleteAccountRowClicked())
                     DeleteAccountFragment.show(absPocketActivity)
                 }
                 .build()
@@ -178,7 +173,6 @@ class DeleteAccountFragment : AbsPocketFragment() {
         }
     }
 
-    @Inject lateinit var tracker: Tracker
 
     private var _binding: ActivityDeleteAccountBinding? = null
     private val binding: ActivityDeleteAccountBinding
@@ -190,7 +184,7 @@ class DeleteAccountFragment : AbsPocketFragment() {
     override fun onCreateViewImpl(
         inflater: LayoutInflater,
         container: ViewGroup,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = ActivityDeleteAccountBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
@@ -206,14 +200,12 @@ class DeleteAccountFragment : AbsPocketFragment() {
         setupEventListener()
         setupProgressDialog()
 
-        tracker.track(SettingsEvents.deleteAccountConfirmationImpression())
     }
 
     private fun setupViews() {
         with(binding) {
             appBar.bind()
                 .onLeftIconClick {
-                    tracker.track(SettingsEvents.deleteDismissed())
                     finish()
                 }
 
@@ -230,7 +222,6 @@ class DeleteAccountFragment : AbsPocketFragment() {
             }
 
             cancelButton.setOnClickListener {
-                tracker.track(SettingsEvents.deleteDismissed())
                 finish()
             }
         }
@@ -246,7 +237,7 @@ class DeleteAccountFragment : AbsPocketFragment() {
                     val link = object : ThemedClickableSpan(
                         ContextCompat.getColorStateList(
                             requireContext(),
-                            com.pocket.ui.R.color.pkt_themed_teal_2_clickable,
+                            com.pocket.ui.R.color.pkt_themed_teal_2_clickable
                         )!!,
                         StateSource { drawableState }
                     ) {
@@ -258,7 +249,7 @@ class DeleteAccountFragment : AbsPocketFragment() {
                         link,
                         original.getSpanStart(annotation),
                         original.getSpanEnd(annotation),
-                        original.getSpanFlags(annotation),
+                        original.getSpanFlags(annotation)
                     )
                 }
             }
@@ -291,7 +282,7 @@ class DeleteAccountFragment : AbsPocketFragment() {
                         null,
                         getStringSafely(R.string.setting_delete_account_in_progress),
                         true,
-                        false,
+                        false
                     )
                 } else {
                     AlertMessaging.dismissSafely(progressDialog, context)
@@ -305,8 +296,7 @@ class DeleteAccountFragment : AbsPocketFragment() {
 class DeleteAccountViewModel
 @Inject constructor(
     private val userRepository: UserRepository,
-    private val userManager: UserManager,
-    private val tracker: Tracker,
+    private val userManager: UserManager
 ): ViewModel() {
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState>
@@ -314,7 +304,7 @@ class DeleteAccountViewModel
 
     private val _events = MutableSharedFlow<Event>(
         extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
     val events: SharedFlow<Event>
         get() = _events
@@ -332,7 +322,6 @@ class DeleteAccountViewModel
     }
 
     fun onDeleteButtonClicked() {
-        tracker.track(SettingsEvents.deleteConfirmationClicked())
         _uiState.update { it.copy(deleteAccountSpinnerVisible = true) }
         viewModelScope.launch {
             try {
@@ -359,7 +348,7 @@ class DeleteAccountViewModel
         val cancelPremiumCheckBoxVisible: Boolean = false,
         val cancelPremiumConfirmed: Boolean = false,
         val permanentlyDeletedConfirmed: Boolean = false,
-        val deleteAccountSpinnerVisible: Boolean = false,
+        val deleteAccountSpinnerVisible: Boolean = false
     ) {
         val deleteButtonEnabled: Boolean get() {
             return (cancelPremiumConfirmed || !cancelPremiumCheckBoxVisible) &&

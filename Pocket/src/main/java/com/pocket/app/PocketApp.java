@@ -1,6 +1,5 @@
 package com.pocket.app;
 
-import com.pocket.analytics.Tracker;
 import com.pocket.app.build.Versioning;
 import com.pocket.app.list.list.ListManager;
 import com.pocket.app.premium.Premium;
@@ -84,7 +83,6 @@ public interface PocketApp {
 	Device device();
 	Versioning versioning();
 	AppOpen appOpen();
-	Tracker tracker();
 	ListManager listManager();
 	SaveExtension saveExtension();
 }

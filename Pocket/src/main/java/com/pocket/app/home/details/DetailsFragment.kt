@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ideashower.readitlater.R
 import com.ideashower.readitlater.databinding.FragmentHomeDetailsBinding
-import com.pocket.analytics.ViewableImpressionScrollListener
+
 import com.pocket.app.MainActivity
 import com.pocket.app.auth.AuthenticationActivity
 import com.pocket.app.home.decorators.VerticalSpacingDecorator
@@ -49,13 +49,10 @@ abstract class DetailsFragment : AbsPocketFragment() {
     }
 
     private fun setupRecyclerView() {
-        val impressionScrollListener = ViewableImpressionScrollListener(viewLifecycleOwner)
-        binding.scrollView.setOnScrollChangeListener(impressionScrollListener)
         binding.recyclerView.addItemDecoration(VerticalSpacingDecorator())
         binding.recyclerView.adapter = DetailsAdapter(
             viewLifecycleOwner = viewLifecycleOwner,
             viewModel = viewModel,
-            impressionScrollListener = impressionScrollListener
         )
         if (FormFactor.isTablet(context)) binding.recyclerView.layoutManager =
             GridLayoutManager(context, 2)

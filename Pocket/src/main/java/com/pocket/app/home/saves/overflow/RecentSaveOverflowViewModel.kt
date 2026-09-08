@@ -1,8 +1,6 @@
 package com.pocket.app.home.saves.overflow
 
 import androidx.lifecycle.ViewModel
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.HomeEvents
 import com.pocket.app.home.slates.overflow.RecommendationOverflowBottomSheetViewModel
 import com.pocket.repository.ItemRepository
 import com.pocket.sdk.api.generated.thing.Item
@@ -13,8 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecentSaveOverflowViewModel @Inject constructor(
-    private val itemRepository: ItemRepository,
-    private val tracker: Tracker,
+    private val itemRepository: ItemRepository
 ) : ViewModel(), RecentSaveOverflowInteractions {
 
     private val _events = MutableSharedFlow<Event>(extraBufferCapacity = 1)
@@ -30,24 +27,20 @@ class RecentSaveOverflowViewModel @Inject constructor(
     }
 
     override fun onMarkAsViewedClicked() {
-        tracker.track(HomeEvents.recentSavesOverflowMarkAsViewed(index, item.id_url!!.url))
         itemRepository.toggleViewed(item)
         _events.tryEmit(Event.Dismiss)
     }
 
     override fun onShareClicked() {
-        tracker.track(HomeEvents.recentSavesOverflowShare(index, item.id_url!!.url))
         _events.tryEmit(Event.ShowShare)
     }
 
     override fun onArchiveClicked() {
-        tracker.track(HomeEvents.recentSavesOverflowArchive(index, item.id_url!!.url))
         itemRepository.archive(item)
         _events.tryEmit(Event.Dismiss)
     }
 
     override fun onDeleteClicked() {
-        tracker.track(HomeEvents.recentSavesOverflowDelete(index, item.id_url!!.url))
         itemRepository.delete(item)
         _events.tryEmit(Event.Dismiss)
     }

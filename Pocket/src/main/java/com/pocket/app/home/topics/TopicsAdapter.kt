@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ideashower.readitlater.databinding.ViewHomeTopicItemBinding
-import com.pocket.analytics.api.UiEntityable
+
 import com.pocket.app.home.HomeViewModel
 import com.pocket.util.android.repeatOnCreated
 

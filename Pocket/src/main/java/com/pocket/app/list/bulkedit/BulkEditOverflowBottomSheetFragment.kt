@@ -1,13 +1,15 @@
 package com.pocket.app.list.bulkedit
 
+import com.pocket.app.list.SavesTab
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.ideashower.readitlater.databinding.FragBulkEditOverflowBottomSheetBinding
-import com.pocket.analytics.api.UiEntityable
-import com.pocket.analytics.appevents.SavesTab
+
+
 import com.pocket.app.tags.ItemsTaggingFragment
 import com.pocket.sdk.api.generated.thing.Item
 import com.pocket.sdk.util.AbsPocketBottomSheetDialogFragment
@@ -75,10 +77,6 @@ class BulkEditOverflowBottomSheetFragment : AbsPocketBottomSheetDialogFragment()
     }
 
     private fun setupAnalytics() {
-        binding.favorite.setUiEntityType(UiEntityable.Type.BUTTON)
-        binding.addTags.setUiEntityType(UiEntityable.Type.BUTTON)
-        binding.markAsViewed.setUiEntityType(UiEntityable.Type.BUTTON)
-        binding.markAsNotViewed.setUiEntityType(UiEntityable.Type.BUTTON)
     }
 
     companion object {

@@ -37,8 +37,7 @@
         android:layout_marginRight="@dimen/pkt_space_sm"
         app:layout_constraintBottom_toBottomOf="@+id/listen_playing_from"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/listen_playing_from"
-        app:uiEntityIdentifier="listen_settings" />
+        app:layout_constraintTop_toTopOf="@+id/listen_playing_from" />
     
     <com.pocket.app.listen.CoverflowView
         android:id="@+id/coverflow"

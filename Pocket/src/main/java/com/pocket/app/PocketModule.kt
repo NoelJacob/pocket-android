@@ -2,10 +2,8 @@ package com.pocket.app
 
 import android.content.Context
 import android.preference.PreferenceManager
-import com.pocket.analytics.BrowserAnalytics
-import com.pocket.analytics.PocketTracker
-import com.pocket.analytics.SnowplowTracker
-import com.pocket.analytics.Tracker
+
+
 import com.pocket.app.build.Versioning
 import com.pocket.repository.ItemRepository
 import com.pocket.repository.NotesRepository
@@ -85,39 +83,6 @@ class PocketModule {
     @Provides @Singleton
     fun provideNetworkStatus(@ApplicationContext context: Context): NetworkStatus =
         AndroidNetworkStatus(context)
-
-    @Provides @Singleton
-    fun providePocketTracker(
-        pocketSingleton: PocketSingleton,
-        appOpen: AppOpen,
-        browserAnalytics: BrowserAnalytics,
-        pocketCache: PocketCache,
-        prefs: Preferences,
-        @ApplicationContext context: Context,
-        appVersion: AppVersion,
-        pktServer: PocketServer,
-        mode: AppMode,
-        clock: Clock,
-        adjust: AdjustSdkComponent,
-        dispatcher: AppLifecycleEventDispatcher
-    ): Tracker = PocketTracker(
-        pocketSingleton.instance,
-        appOpen,
-        browserAnalytics,
-        pocketCache,
-        SnowplowTracker(
-            prefs,
-            context,
-            clock,
-            pktServer.snowplowCollector(),
-            pktServer.snowplowPostPath(),
-            mode.isForInternalCompanyOnly,
-            { adjust.getAdId() },
-            appVersion.apiId,
-            appVersion.getVersionName(context)
-        ),
-        dispatcher
-    )
 
     @Provides @Singleton
     fun providePocketPush(

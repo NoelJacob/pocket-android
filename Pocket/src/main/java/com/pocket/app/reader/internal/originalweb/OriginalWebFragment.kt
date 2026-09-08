@@ -19,8 +19,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.ideashower.readitlater.R
 import com.ideashower.readitlater.databinding.FragmentOriginalWebBinding
-import com.pocket.analytics.Tracker
-import com.pocket.analytics.appevents.OriginalWebViewEvents
 import com.pocket.app.CustomTabs
 import com.pocket.app.reader.Reader
 import com.pocket.app.reader.ReaderFragment
@@ -41,7 +39,6 @@ class OriginalWebFragment : AbsPocketFragment(), Reader.NavigationEventHandler {
     @Inject lateinit var theme: Theme
     @Inject lateinit var systemDarkTheme: SystemDarkTheme
     @Inject lateinit var reader: Reader
-    @Inject lateinit var tracker: Tracker
     @Inject lateinit var itemRepository: ItemRepository
     @Inject lateinit var customTabs: CustomTabs
 
@@ -69,7 +66,7 @@ class OriginalWebFragment : AbsPocketFragment(), Reader.NavigationEventHandler {
     override fun onCreateViewImpl(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentOriginalWebBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
@@ -127,7 +124,6 @@ class OriginalWebFragment : AbsPocketFragment(), Reader.NavigationEventHandler {
     }
 
     private fun launchCustomTab() {
-        tracker.track(OriginalWebViewEvents.screenView())
         lifecycleScope.launch {
             val item = try {
                 itemRepository.getDomainItem(args.url)
@@ -144,7 +140,7 @@ class OriginalWebFragment : AbsPocketFragment(), Reader.NavigationEventHandler {
                     options.pickPreferredBrowser()
                     val message = resources.getString(
                         R.string.original_web_changed_browser_setting,
-                        options.selectedLabel,
+                        options.selectedLabel
                     )
                     Toast.makeText(context, message, Toast.LENGTH_LONG).show()
                 }
@@ -234,9 +230,9 @@ class OriginalWebFragment : AbsPocketFragment(), Reader.NavigationEventHandler {
                 context,
                 CUSTOM_TAB_REQUEST_CODE,
                 Intent(context, CustomTabEventReceiver::class.java).setAction(ACTION_OPEN_MENU),
-                PendingIntentUtils.addMutableFlag(0),
+                PendingIntentUtils.addMutableFlag(0)
             ),
-            true,
+            true
         )
 
     private fun CustomTabsIntent.Builder.addPreviousAndNext(): CustomTabsIntent.Builder {

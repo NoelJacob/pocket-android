@@ -66,7 +66,6 @@ public class PremiumMessageFragment extends AbsPocketFragment {
         View root = inflater.inflate(R.layout.activity_premium_message, container, false);
         var startScreen = requireArguments().getString(PremiumMessageActivity.EXTRA_START_SCREEN);
         if (startScreen != null) {
-            app().tracker().bindUiEntityValue(root, startScreen);
         }
         return root;
     }

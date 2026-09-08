@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ideashower.readitlater.databinding.ViewHomeRecentSaveCardBinding
-import com.pocket.analytics.ViewableImpressionScrollListener
 import com.pocket.sdk2.view.LazyAssetBitmap
 import com.pocket.ui.util.LazyBitmapDrawable
 import com.pocket.util.android.repeatOnCreated
@@ -16,7 +15,6 @@ import com.pocket.util.android.repeatOnCreated
 class RecentSavesAdapter(
     viewLifecycleOwner: LifecycleOwner,
     private val viewModel: RecentSavesViewModel,
-    private val impressionScrollListener: ViewableImpressionScrollListener,
 ): ListAdapter<RecentSavesViewModel.SaveUiState, RecentSavesAdapter.SavesViewHolder>(DIFF_CALLBACK) {
 
     init {
@@ -80,12 +78,6 @@ class RecentSavesAdapter(
                 favoriteIcon.setOnClickListener { viewModel.onFavoriteClicked(state.item, state.index) }
                 overflow.setOnClickListener { viewModel.onSaveOverflowClicked(state.item, state.index) }
 
-                impressionScrollListener.track(
-                    view = root,
-                    identifier = state.item.id_url!!.url
-                ) {
-                    viewModel.onSaveViewed(position, state.item.id_url!!.url)
-                }
             }
         }
     }
