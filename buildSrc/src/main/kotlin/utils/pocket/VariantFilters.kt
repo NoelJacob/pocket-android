@@ -8,7 +8,8 @@ fun BaseAppModuleExtension.setupVariantFilters() {
         val flavor = flavors.first().name
 
         if ((type == BuildTypes.DEBUG &&
-                    flavor != Flavors.DEVELOP
+                    flavor != Flavors.DEVELOP &&
+                    flavor != Flavors.FDROID
                     ) ||
             (type == BuildTypes.TEAM_RELEASE &&
                     flavor != Flavors.TEAM_A &&
@@ -16,7 +17,8 @@ fun BaseAppModuleExtension.setupVariantFilters() {
                     flavor != Flavors.PREMIUM_REVIEW
                     ) ||
             (type == BuildTypes.UNSIGNED_RELEASE &&
-                    flavor != Flavors.PLAY
+                    (flavor != Flavors.PLAY &&
+                    flavor != Flavors.FDROID)
                     )
         ) {
             ignore = true

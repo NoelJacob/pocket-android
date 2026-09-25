@@ -35,10 +35,8 @@ import com.pocket.sdk.api.generated.enums.AppTheme;
 import com.pocket.sdk.api.generated.enums.DeviceOrientation;
 import com.pocket.sdk.api.generated.enums.OnlineStatus;
 import com.pocket.sdk.api.generated.thing.ActionContext;
-import com.pocket.sdk.build.AlphaBuild;
 import com.pocket.sdk.build.AppVersion;
 import com.pocket.sdk.dev.ErrorHandler;
-import com.pocket.sdk.dev.SentryManager;
 import com.pocket.sdk.help.Troubleshooter;
 import com.pocket.sdk.http.HttpClientDelegate;
 import com.pocket.sdk.image.ImageCache;
@@ -56,7 +54,6 @@ import com.pocket.sdk.util.wakelock.WakeLockManager;
 import com.pocket.sdk2.analytics.context.Contextual;
 import com.pocket.sdk2.analytics.context.Interaction;
 import com.pocket.sdk2.api.legacy.PocketCache;
-import com.pocket.sdk2.braze.BrazeManager;
 import com.pocket.ui.view.notification.PktSnackbar;
 import com.pocket.util.android.Clipboard;
 import com.pocket.util.android.IntentUtils;
@@ -115,9 +112,6 @@ public class App extends Application implements Contextual, PocketApp {
 	@Inject SaveExtension saveExtension;
 	@Inject Preferences preferences;
 	@Inject Pocket pocket;
-	@Inject BrazeManager brazeManager;
-	@Inject SentryManager sentryManager;
-	@Inject AlphaBuild alpha;
 	@Inject CustomTabs customTabs;
 
 	// App State
@@ -153,8 +147,6 @@ public class App extends Application implements Contextual, PocketApp {
 
 		Logs.mode(appVersion.mode());
 
-		brazeManager.setup();
-		alpha.setup();
 
 		Forgetter.INSTANCE.forget(pocket, preferences);
 

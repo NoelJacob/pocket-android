@@ -5,12 +5,9 @@ import com.pocket.app.AppLifecycle.LogoutPolicy
 import com.pocket.app.AppLifecycleEventDispatcher
 import com.pocket.app.AppMode
 import com.pocket.sdk.api.PocketServer
-import com.pocket.sdk.http.sentry.ExcludedTargets
 import com.pocket.sdk.network.eclectic.EclecticHttp
 import com.pocket.sdk.network.toEclecticOkHttpClient
 import com.pocket.util.prefs.Preferences
-import io.sentry.okhttp.SentryOkHttpEventListener
-import io.sentry.okhttp.SentryOkHttpInterceptor
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -49,7 +46,6 @@ class HttpClientDelegate
             client = OkHttpClient.Builder()
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
-                .addSentry()
                 .addLogging()
                 .build()
                 .toEclecticOkHttpClient()
@@ -57,20 +53,6 @@ class HttpClientDelegate
         return client
     }
 
-    private fun OkHttpClient.Builder.addSentry() = apply {
-        val regex = ExcludedTargets()
-            .apply {
-                exclude("https://api.getpocket.com/graphql", ExcludedTargets.Mode.Exact) // graph
-                exclude("https://text.getpocket.com/v3beta/mobile", ExcludedTargets.Mode.Exact) // parser
-                exclude("https://api.getpocket.com/v3/send", ExcludedTargets.Mode.Exact) // v3 proxy
-                exclude("https://api.getpocket.com/v3/get", ExcludedTargets.Mode.Exact) // v3 proxy
-                exclude("https://api.getpocket.com/v3/fetch", ExcludedTargets.Mode.Exact) // v3 proxy
-                exclude("https://pocket-image-cache.com", ExcludedTargets.Mode.Prefix) // image cache
-            }
-            .toRegex()
-        addInterceptor(SentryOkHttpInterceptor(failedRequestTargets = listOf(regex)))
-        eventListener(SentryOkHttpEventListener())
-    }
 
     private fun OkHttpClient.Builder.addLogging() = apply {
         if (mode.isForInternalCompanyOnly) {

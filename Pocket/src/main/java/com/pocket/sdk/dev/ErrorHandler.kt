@@ -1,7 +1,6 @@
 package com.pocket.sdk.dev
 
 import com.pocket.app.AppMode
-import io.sentry.Sentry
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,7 +13,6 @@ class ErrorHandler @Inject constructor(
     /** Report a caught/handled exception. */
     fun reportError(throwable: Throwable) {
         throwable.printStackTrace()
-        Sentry.captureException(throwable)
     }
 
     fun reportOnProductionOrThrow(throwable: Throwable) {

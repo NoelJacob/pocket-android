@@ -1,7 +1,6 @@
 package com.pocket.app.auth
 
 import androidx.lifecycle.ViewModel
-import com.pocket.app.AdjustSdkComponent
 import com.pocket.app.AppMode
 import com.pocket.app.UserManager
 import com.pocket.sdk.Pocket
@@ -26,7 +25,6 @@ class AuthenticationViewModel @AssistedInject constructor(
     private val httpClientDelegate: HttpClientDelegate,
     private val fxaFeature: FxaFeature,
     private val userManager: UserManager,
-    private val adjustSdkComponent: AdjustSdkComponent,
     private val mode: AppMode,
     @Assisted val skipOnboarding: Boolean
 ) : ViewModel() {
@@ -118,12 +116,6 @@ class AuthenticationViewModel @AssistedInject constructor(
                 userApi.loginWithAccessToken(authKey, extras)
             },
             {
-                val isSignUp = type != null && type == "signup"
-                if (isSignUp) {
-                    adjustSdkComponent.trackSignUp()
-                } else {
-                }
-
                 // Make sure that when they log out they skip this screen
                 // and see the signed out experience.
                 userManager.enableSignedOutExperience()

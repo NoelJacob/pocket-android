@@ -1,0 +1,16 @@
+# Pocket/src/main/java/com/pocket/app/UserManager.java
+## What this is
+The owner of login, logout, and account-deletion flows for the whole app (a Hilt singleton implementing `AppLifecycle`). Login runs the Pocket auth API on a background thread, then fans out `onLoggingIn` (blocking window) and `onLoggedIn` (UI transition) to every registered component. Logout executes the four-phase `LogoutPolicy` protocol across all components, wipes user data, and routes back to the correct start screen. Feature code MUST go through here and never touch `Pocket.user()` login/logout directly.
+## How it fits
+`AuthenticationViewModel.onCredentialsReceived` calls `authenticate()` with a `loginWithAccessToken` op; on success the login screen proceeds to the default activity. Any settings/logout entry calls `logout(activity)`; the token-revoked listener self-triggers logout with a bad-credentials flag that `MainActivity`/`MainViewModel` surface as a snackbar. `getDefaultActivity()` (Main vs Authentication, honoring the signed-out experience) drives `startDefaultActivity()` routing in `AddActivity`, `AuthenticationFragment`, and post-logout restart.
+## Key pieces
+- `authenticate(operation, success, failure)`: builds auth extras (internal builds inject `Device` Android/serial IDs), runs the op off-UI guarded by `isModifyingLogin`, dispatches `onLoggingIn` (exceptions swallowed per component), then posts success + `onLoggedIn` on the UI thread; on unexpected not-logged-in state it defensively logs out and restores the anonymous guid before failing.
+- `logout(activity)`: splash-screen swap + progress dialog, collect policies via `onLogoutStarted`, stop-phase in a 5-thread pool behind a latch, `pocket.await()` drain, delete-phase, `pocket.user().logout()`, then kill `AppThreads`/`AppScope` pools, clear webview DBs + user prefs on the UI thread, restart all policies, broadcast `ACTION_LOGOUT` to kill activities, and relaunch the default activity. WHY this order is data safety: nothing new may start until everything stopped, and shared pools die last because logout itself needs them.
+- `deleteAccount`: remote delete action, then sets the deleted flag and runs the full logout; `hasDeletedAccount`/`onShowedDeletedAccountToast` is the consume-once handshake with the post-login snackbar.
+- `hadBadCredentials` handshake + `onActivityResumed` dialog: covers the logged-out-while-away case (revoked token forces `logout()` with no activity) by telling the next resumed screen.
+- `enableSignedOutExperience` / `getDefaultActivity`: post-first-login, logged-out users land on `MainActivity` (signed-out Home) instead of the login wall.
+- `isStoppingData`: lets in-flight work check whether a logout drain is underway.
+## Junior notes
+- In internal builds, any login-state change outside this class throws; that is intentional. Always add new auth paths as `AuthOperation`s here.
+- The logout sequence crosses threads (pool -> UI post) and touches legacy webview DB names; keep additions to the policy phases (stop/delete/restart/logged-out) and never call other components from stop/delete/restart, only from `onLoggedOut`.
+- `authenticate` callbacks: success/failure run on the UI thread, but `onLoggingIn` observers run on the background auth thread and MUST NOT touch Views.

@@ -8,8 +8,6 @@ import com.pocket.sdk2.api.legacy.PocketCache
 import com.pocket.app.AppMode
 import com.pocket.util.prefs.StringPreference
 import com.pocket.util.prefs.BooleanPreference
-import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.common.ConnectionResult
 import com.google.firebase.messaging.FirebaseMessaging
 import com.pocket.sdk.api.generated.enums.CxtUi
 import com.pocket.util.java.Logs
@@ -50,11 +48,8 @@ class PktPush(
     override fun getToken(): String? = fcmToken.get()
 
     override fun isAvailable(): Boolean {
-        // TODO some statuses are recoverable, use GoogleApiAvailability.getErrorDialog to handle displaying a message to the user,
-        // which will require an Activity context to show and a request code / onActivityResult path to handle retrying
-        return GoogleApiAvailability.getInstance()
-            .isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS &&  // play services available
-                pktCache.isLoggedIn // user is logged in
+        // FOSS: no Play Services check; FirebaseMessaging failures surface via the registration listener.
+        return pktCache.isLoggedIn // user is logged in
     }
 
     override fun register(cxt_ui: CxtUi?, registrationListener: Push.RegistrationListener?) {

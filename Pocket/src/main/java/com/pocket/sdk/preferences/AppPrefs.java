@@ -43,7 +43,6 @@ public class AppPrefs {
 	// this could give a hacker clues.
 	
 	/** There might be some older versions still using these keys and if so, changing them would log them out.  should add some logging to see if we can remove this or not. */
-	public final BooleanPreference USER_NEEDS_OLD_AMAZON_KEYS;
 	
 	// User Set Options/Preferences
 	
@@ -125,7 +124,6 @@ public class AppPrefs {
 	public AppPrefs(Preferences prefs, @ApplicationContext Context context) {
 		this.prefs = prefs;
 
-		USER_NEEDS_OLD_AMAZON_KEYS = prefs.forUser("oldamzky", false);
 
 		// the default value for alwaysOpenOriginal is the inverse of the old value autoOpenBestView
 		// If you read this comment in the year 2024 or later, you can just

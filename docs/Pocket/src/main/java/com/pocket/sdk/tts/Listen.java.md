@@ -1,0 +1,17 @@
+# Pocket/src/main/java/com/pocket/sdk/tts/Listen.java
+## What this is
+This is the brain of the Listen feature: a Hilt-injected application singleton (Hilt DI = constructor parameters provided automatically; singleton = one shared instance for the whole app) that owns the playlist, the active player engine, and the published `ListenState` every screen observes. It translates button presses (`Controls`) into player actions, merges player callbacks and settings into new state snapshots, and handles analytics, item sessions, and cleanup on logout.
+## How it fits
+Everything Listen-related flows through here. UI and system surfaces (`ListenMediaService` for media buttons, `ListenNotification`, article screens, `ListenDeepLinkActivity`) call `controls()` or `trackedControls(...)`; this class drives a `Playlist` (usually `UnreadArticlesList`) and one `ListenPlayer` (either `GetItemAudioPlayer` for server audio or `TTSPlayer` for on-device speech, chosen by `ListenEngine`). State changes publish over `states()`, an RxJava observable stream (a subscribable flow of values over time), which the media service, notification, and player UI subscribe to. It also syncs listen analytics actions (open, start, resume, pause, reach-end) to the server.
+## Key pieces
+- `controls() / trackedControls(...)`: the two ways to drive playback. Plain controls just act; tracked controls wrap each call with analytics events and item-session segments. Screens pass their view for context; background callers pass a contextual lambda.
+- `ListenControls` (inner class): the real `Controls` implementation — `on/off/play/pause/next/previous/seekTo/setVoice/setSpeed`. `on()` starts the media session, inits the playlist, and wires player streams; `off()` releases the player, abandons audio focus, and resets to `STOPPED`.
+- `updateEngine() / listenForEngineChanges()`: swaps the `ListenPlayer` when the streaming-voice preference or feature flag changes, preserving play state where possible. WHY: the two engines have incompatible capabilities (accurate durations versus multiple voices).
+- `calculateCurrentState() / setState() / transact()`: builds a fresh immutable `ListenState` from player + playlist + prefs, deduplicates it with `deepEquals`, and emits it. `transact` batches several mutations into one emission so observers never see half-applied states.
+- `onTrackCompleted() / autoPlayNext()`: end-of-article policy — records reach-end analytics, optionally archives the finished item, and either advances or stops based on the auto-play flag.
+- `state() / states()`: current snapshot versus the ongoing stream. UI reads `state()` once for initial layout and subscribes to `states()` for updates.
+- `onLogoutStarted / deleteUserData`: stops playback and wipes listen preferences so the next user starts clean. `isListenable(track)` gates Listen to articles with enough words.
+## Junior notes
+- `ListenState` is immutable; you never mutate it, you `rebuild()` a copy and publish. Comparing states uses field-by-field `deepEquals` to avoid UI flicker from identical emissions.
+- `ResumeWhenLoaded` versus `PauseWhenLoaded`: loading is async, so the desired end state (resume or stay paused) is captured in an `OnLoaded` callback object at request time. Don't call `play()` right after `load()`; pass the right callback.
+- This class implements `AppLifecycle`, so it observes app foreground/background and logout. If you add resources (subscriptions, receivers), release them in `off()` and the logout path, not just in `onDestroy` of some screen.

@@ -62,7 +62,6 @@ public class AppVersion {
 	 */
 	private final String mHardCodedStoreName;
 	private final AppMode mMode;
-	private final boolean mNeedsOldAmazonKeys;
 	private final Lazy<ErrorHandler> errorHandler;
 	/**
 	 * Like {@link #mHardCodedStoreName} but guessed based on what app stores are available on this device at runtime.
@@ -74,7 +73,6 @@ public class AppVersion {
 		this.errorHandler = errorHandler;
 		mBuildConfigKey = BuildConfig.MARKET_KEY;
 		mHardCodedStoreName = getHardCodedStoreNameForKey(mBuildConfigKey);
-		mNeedsOldAmazonKeys = appPrefs.USER_NEEDS_OLD_AMAZON_KEYS.get();
 		
 		if (BuildConfig.DEBUG) {
 			mMode = AppMode.DEV;
@@ -97,21 +95,10 @@ public class AppVersion {
 	 * @return the API KEY/Consumer key used when connecting to the Pocket API.
 	 */
 	public String getConsumerKey() {
-		if (mNeedsOldAmazonKeys) {
-			// Old Amazon Keys
-			if (FormFactor.isTablet()) {
-				return BuildConfig.API_KEY_AMAZON_TABLET;
-			} else {
-				return BuildConfig.API_KEY_AMAZON_PHONE;
-			}
-			
+		if (FormFactor.isTablet()) {
+			return BuildConfig.API_KEY_TABLET;
 		} else {
-			// Normal
-			if (FormFactor.isTablet()) {
-				return BuildConfig.API_KEY_TABLET;
-			} else {
-				return BuildConfig.API_KEY_PHONE;
-			}
+			return BuildConfig.API_KEY_PHONE;
 		}
 	}
 
@@ -271,10 +258,6 @@ public class AppVersion {
 		}
 	}
 
-    public boolean isAmazonBuild() {
-        return STORE_KEY_AMAZON.equals(mBuildConfigKey);
-    }
-	
 	public AppMode mode() {
 		return mMode;
 	}

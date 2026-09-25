@@ -6,6 +6,7 @@ object Flavors {
     const val PREMIUM_REVIEW = "premiumReview"
     const val TEAM_A = "teamA"
     const val PLAY = "play"
+    const val FDROID = "fdroid"
 }
 object BuildTypes {
     const val DEBUG = "debug"

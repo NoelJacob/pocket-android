@@ -373,18 +373,7 @@
         <!-- Used to get analytics on what apps users share to  -->
         <receiver android:name="com.pocket.app.share.ShareReceiver" />
         
-        <receiver
-            android:name="com.pocket.sdk2.braze.BrazeNotificationReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.braze.push.intent.NOTIFICATION_RECEIVED" />
-                <action android:name="com.braze.push.intent.NOTIFICATION_OPENED" />
-                <action android:name="com.braze.push.intent.NOTIFICATION_DELETED" />
-            </intent-filter>
-        </receiver>
-
-        <!-- GCM -->
-
+        <!-- FCM push receiver -->
         <service
             android:name="com.pocket.sdk.notification.push.firebase.FcmMessageService"
             android:exported="false">
@@ -400,8 +389,6 @@
             android:name="opensense"
             android:resource="@xml/supports" />
 
-        <meta-data android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

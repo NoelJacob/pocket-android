@@ -64,7 +64,6 @@ public class UserManager implements AppLifecycle {
 	private final ActivityMonitor activities;
 	private final Context context;
 	private final AppLifecycleEventDispatcher dispatcher;
-	private final InstallReferrer referrer;
 	private final Device device;
 	private final Preferences prefs;
 	private final BooleanPreference signedOutExperienceEnabled;
@@ -89,7 +88,6 @@ public class UserManager implements AppLifecycle {
 			AppLifecycleEventDispatcher dispatcher,
 			Preferences prefs,
 			Device device,
-			InstallReferrer referrer,
 			ErrorHandler errorHandler
 	) {
 		dispatcher.registerAppLifecycleObserver(this);
@@ -101,7 +99,6 @@ public class UserManager implements AppLifecycle {
 		this.activities = activities;
 		this.context = context;
 		this.dispatcher = dispatcher;
-		this.referrer = referrer;
 		this.device = device;
 		this.signedOutExperienceEnabled = prefs.forApp("noaccntxp", false);
 		this.hadBadCredentials = prefs.forApp("invalidcred", false);
@@ -139,7 +136,7 @@ public class UserManager implements AppLifecycle {
 	 */
 	public void authenticate(AuthOperation operation, OnAuthSuccess success, OnAuthFail failure) {
 		threads.async(() -> {
-			Pocket.AuthenticationExtras extras = AndroidPocket.authenticationExtras(context, referrer.getGooglePlayReferrer());
+			Pocket.AuthenticationExtras extras = AndroidPocket.authenticationExtras(context, null);
 			if (mode.isForInternalCompanyOnly()) {
 				// There is an Alpha setting that allows overriding these values for testing.
 				extras = new Pocket.AuthenticationExtras(extras.referrer, device.anid(), device.sid());

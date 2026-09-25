@@ -1,0 +1,16 @@
+# Pocket/src/main/java/com/pocket/sdk/tts/TTSPlayer.kt
+## What this is
+This is the on-device text-to-speech backend for Listen: it parses a saved article's offline HTML into spoken sentences and feeds them to Android's `TextToSpeech` engine (the OS service that synthesizes speech from text using an installed voice). No network audio is involved; the voice, speed, and pitch all come from the device's TTS settings plus Pocket prefs. It keeps a small queue of upcoming sentences buffered in the engine so playback sounds continuous.
+## How it fits
+`Listen` uses this player when the streaming engine is off (see `ListenEngine.Tts`). The pipeline is: user presses play -> `Listen` calls `load(track)` -> this class runs `ArticleUtteranceParser` on the offline article HTML -> queues the resulting `Utterance` list into `TextToSpeech` with silence gaps between sections -> emits started-utterance, progress, completion, and error streams that `Listen` turns into `ListenState` updates, highlighting, and auto-advance. `seekTo` and `playFromNodeIndex` re-queue from a computed sentence position.
+## Key pieces
+- `load(track, loaded)`: starts parsing and initializes `TextToSpeech` if needed. The `OnLoaded` callback fires once sentences are queued, letting `Listen` resume or stay paused. WHY split init from play: TTS engine startup is async and can fail independently of parsing.
+- `play(position) / queueNextUtterances()`: core pump that speaks the current sentence and keeps `QUEUED_BUFFER` (3) sentences pre-queued. Headers get extra pre/post silence so titles sound separated; normal nodes get a short post gap; the article end gets a long trailing silence for a clean transition.
+- `onUtteranceStarted / onUtteranceCompleted / onUtteranceError`: `UtteranceProgressListener` callbacks (OS hooks fired per sentence) that advance `mCurrentPosition`, update progress/time estimates, emit `mStartedUtterances` for highlighting, and fire completions at the last sentence.
+- `seekTo(position) / seek(increment) / playFromNodeIndex(nodeIndex)`: position math over estimated utterance durations (device TTS reports no real clock). Duration is estimated from word counts and speed; elapsed accumulates via a stopwatch plus per-sentence estimates.
+- Voice/speed/pitch (`setVoice/setSpeed/setPitch/restoreVoicePreference/updateAvailableLocales`): applies prefs to the engine, persists the choice, and rebuilds the voice set through `VoiceCompat`. Changing voice or speed re-queues the current sentence.
+- `saveProgress()`: writes the listen position back to the item's article position so resume-from-where-you-left-off works across sessions. Wake-lock handling keeps the CPU awake during speech but releases on pause/shutdown.
+## Junior notes
+- Durations here are estimates, never exact. UI must gate the true seek bar on the accurate-duration feature (streaming only); in TTS mode the progress bar is approximate by design.
+- `TextToSpeech` callbacks arrive on a binder thread, not the main thread. State mutations here route through the queue lock and handler posts; touching views directly from them crashes.
+- `shutdown()` versus `release()`: both tear down the engine, wake lock, and receivers. `Listen` calls `release()` on engine swaps; failing to also dismiss the language-install receiver leaks a context-registered broadcast receiver.

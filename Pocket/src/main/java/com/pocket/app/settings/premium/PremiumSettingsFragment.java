@@ -27,11 +27,6 @@ import com.pocket.sdk.api.generated.thing.PremiumFeatureStatus;
 import com.pocket.sdk.api.generated.thing.PremiumSubscriptionInfo;
 import com.pocket.sdk.api.generated.thing.PurchaseStatus;
 import com.pocket.sdk.api.thing.AccountUtil;
-import com.pocket.sdk.premium.billing.PremiumPurchaseHelper;
-import com.pocket.sdk.premium.billing.PremiumPurchaseHelper.PurchaseListener;
-import com.pocket.sdk.premium.billing.PremiumPurchaseHelper.PurchasingState;
-import com.pocket.sdk.premium.billing.google.GoogleBillingUtil;
-import com.pocket.sdk.premium.billing.google.Products;
 import com.pocket.sync.source.subscribe.Changes;
 import com.pocket.sync.source.subscribe.Subscription;
 import com.pocket.sync.value.Parceller;
@@ -74,7 +69,6 @@ public class PremiumSettingsFragment extends AbsPrefsFragment {
 	}
 	
 	private Bundle restoredState;
-	private PremiumPurchaseHelper purchaseHelper;
 	private PurchaseStatus status;
 	private Subscription premiumSubscription;
 
@@ -218,7 +212,6 @@ public class PremiumSettingsFragment extends AbsPrefsFragment {
 					})
 				.build());
 			
-			removePurchaseHelper();
 			
 			if (status.features != null && !status.features.isEmpty()) {
 				// Premium features
@@ -246,19 +239,9 @@ public class PremiumSettingsFragment extends AbsPrefsFragment {
 		} else {
 			// Free
 			
-			initPurchaseHelper();
 			
 			// Questions Feedback
 			prefs.add(PreferenceViews.newHeader(this, R.string.prem_setting_premium_header));
-			
-			// Upgrade
-			prefs.add(PreferenceViews.newActionBuilder(this, R.string.prem_setting_upgrade)
-					.setOnClickListener(() -> app().premium().showUpgradeScreen(getActivity(), CxtSource.PREMIUM_SETTINGS))				.build());
-
-			// Restore
-			prefs.add(PreferenceViews.newActionBuilder(this, R.string.prem_setting_restore)
-					.setOnClickListener(() -> purchaseHelper.restorePurchase())
-				.build());
 			
 			setHeaderVisibility(false);
 		}
@@ -279,64 +262,10 @@ public class PremiumSettingsFragment extends AbsPrefsFragment {
         hideProgress();
 	}
 	
-	private void removePurchaseHelper() {
-		if (purchaseHelper != null) {
-			purchaseHelper.onDestroy();
-			purchaseHelper = null;
-		}
-	}
-
-	private void initPurchaseHelper() {
-		if (purchaseHelper == null) {
-			purchaseHelper = new PremiumPurchaseHelper(GoogleBillingUtil.PREMIUM, getActivity(), new PurchaseListener() {
-				
-				@Override
-				public void onPurchasingStateChanged(PurchasingState state) {
-					if (isDetachedOrFinishing()) return;
-					if (state == PurchasingState.PURCHASING || state == PurchasingState.ACTIVATING || state == PurchasingState.RESTORING) {
-						showProgress();
-					} else {
-						hideProgress();
-					}
-				}
-				
-				@Override
-				public void onPremiumPurchased() {
-					Toast.makeText(getActivity(), R.string.purchase_restored, Toast.LENGTH_LONG)
-						.show();
-					app().premium().showPurchaseComplete(getActivity(), CxtSource.PREMIUM_SETTINGS);
-				}
-				
-				// None of the following are expected or needed on this screen
-				
-				@Override
-				public void onGooglePlayUnavailable() {}
-				
-				@Override
-				public void showWebPaymentFlow() {}
-				
-				@Override
-				public void onProductsLoaded(Products products) {}
-				
-				@Override
-				public void onProductsLoadFailed() {}
-				
-				@Override
-				public void onProductPurchaseActivationFailedDialogDismissed() {}
-				
-				@Override
-				public void onPurchaseFailed(boolean isCancel) {}
-				
-			}, restoredState);
-		}
-	}
 	
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		if (purchaseHelper != null) {
-			purchaseHelper.onSaveInstanceState(outState);
-		}
 		if (status != null) {
 			Parceller.put(outState, ARG_INFO, status);
         }
@@ -346,14 +275,6 @@ public class PremiumSettingsFragment extends AbsPrefsFragment {
 	public void onStop() {
 		super.onStop();
 		premiumSubscription = Subscription.stop(premiumSubscription);
-	}
-	
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		if (purchaseHelper != null) {
-			purchaseHelper.onDestroy();
-		}
 	}
 	
 	@Override

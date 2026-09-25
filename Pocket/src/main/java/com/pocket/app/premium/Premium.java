@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.ideashower.readitlater.R;
 import com.pocket.app.settings.premium.PremiumSettingsFragment;
+import com.pocket.sdk.util.DeepLinks;
 import com.pocket.sdk.api.generated.enums.CxtSource;
 import com.pocket.sdk2.api.legacy.PocketCache;
 
@@ -39,7 +40,7 @@ public class Premium {
     }
 
     public Intent newPremiumDeeplink(Context context) {
-        return PremiumPurchaseActivity.newStartIntent(context, CxtSource.URL_SCHEME, false);
+        return DeepLinks.newPremiumSettingsIntent(context);
     }
 
     /**
@@ -54,7 +55,7 @@ public class Premium {
     }
 
     private void showUpgradeScreen(Context context, CxtSource source, boolean isRenew) {
-        PremiumPurchaseActivity.startActivity(context, source, isRenew);
+        context.startActivity(DeepLinks.newPremiumSettingsIntent(context));
     }
 
     /**
@@ -75,7 +76,7 @@ public class Premium {
         if (pktcache.hasPremiumAndPaid()) { // Consider making context an AbsPocketActivity and just grabbing the pktcache from there rather than requiring the dependency
             PremiumSettingsFragment.show(context, null);
         } else if (pktcache.isPremiumUpgradeAvailable()) {
-            PremiumPurchaseActivity.startActivity(context, source);
+            PremiumSettingsFragment.show(context, null);
         } else {
             PremiumSettingsFragment.show(context, null);
         }

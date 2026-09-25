@@ -1,6 +1,5 @@
 package com.pocket.sdk.notification.push.firebase
 
-import com.braze.push.BrazeFirebaseMessagingService
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.pocket.app.App
@@ -16,9 +15,7 @@ class FcmMessageService : FirebaseMessagingService() {
         val app = App.from(this)
         val data: Map<String, String> = remoteMessage.data
         val isPinpointPushNotification = (data[PUSH_TITLE] != null || data[PUSH_BODY] != null)
-        if (BrazeFirebaseMessagingService.handleBrazeRemoteMessage(this, remoteMessage)) {
-            // notification was handled by Braze.  Nothing else is required
-        } else if (isPinpointPushNotification) {
+        if (isPinpointPushNotification) {
             // leaving empty until fully removed.  Differentiating from an instant sync notification
         } else {
             // instant sync notification

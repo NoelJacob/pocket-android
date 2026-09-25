@@ -38,8 +38,6 @@ import androidx.fragment.app.FragmentManager.OnBackStackChangedListener;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.transition.TransitionManager;
 
-import com.google.android.play.core.review.ReviewManager;
-import com.google.android.play.core.review.ReviewManagerFactory;
 import com.ideashower.readitlater.BuildConfig;
 import com.ideashower.readitlater.R;
 
@@ -878,59 +876,8 @@ public abstract class AbsPocketActivity extends AppCompatActivity implements Ses
 	private void checkIfEligibleForReviewPrompt() {
 		ReviewPrompt reviewPrompt = app().reviewPrompt();
 		if (reviewPrompt.shouldShow() && !mAskUrlOverlayVisible) {
-			if (app().build().isAmazonBuild()) {
-				showAmazonStoreReviewPrompt();
-			} else {
-				final ReviewManager manager = ReviewManagerFactory.create(this);
-				manager.requestReviewFlow().addOnCompleteListener(requestFlow -> {
-					if (requestFlow.isSuccessful()) {
-						manager.launchReviewFlow(this, requestFlow.getResult());
-						reviewPrompt.onShow(); // track review prompt show analytics
-						reviewPrompt.onReview();
-					} else {
-						reviewPrompt.onReviewPromptError();
-					}
-				});
 			}
-		}
 		reviewPrompt.onResumeAnotherScreen();
-	}
-
-	private void showAmazonStoreReviewPrompt() {
-		ReviewPrompt reviewPrompt = app().reviewPrompt();
-		PktSnackbar review = PktSnackbar.make(this, PktSnackbar.Type.DEFAULT_DISMISSABLE, null, null, null);
-		review.bind()
-				.title(getText(R.string.tx_love_pocket))
-				.message(getText(R.string.tx_tell_others))
-				.onAction(R.string.ac_write_review, v -> {
-					review.bind().dismiss();
-					Uri appStoreUri = Uri.parse("market://details?id=com.ideashower.readitlater.pro");
-					final Intent intent = new Intent(Intent.ACTION_VIEW, appStoreUri);
-					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-					if (IntentUtils.isActivityIntentAvailable(this, intent)) {
-						startActivity(intent);
-					} else {
-						new AlertDialog.Builder(this)
-								.setTitle(R.string.dg_market_not_found_t)
-								.setMessage(R.string.dg_market_not_found_m)
-								.setNeutralButton(R.string.ac_ok, null)
-								.show();
-					}
-					reviewPrompt.onReview();
-				})
-				.onDismiss(reason -> {
-					if (reason == PktSnackbar.DismissReason.USER) {
-						reviewPrompt.onDismiss();
-					}
-					onClipboardUrlPromptViewDismissed(review);
-				});
-		updateAskUrlOverlayPadding(review);
-		onClipboardUrlPromptViewLayout(review);
-		review.show();
-		reviewPrompt.onShow();
-
-		// Hide in 10 seconds
-		mHandler.postDelayed(() -> review.bind().dismiss(), Milliseconds.SECOND * 10);
 	}
 
 	@Override
